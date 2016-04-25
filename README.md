@@ -18,6 +18,8 @@ sudo apt-get install ros-jade-rosserial
 cd ~
 mkdir catkin_ws
 cd catkin_ws
+mkdir src
+cd src
 catkin_init_workspace
 ```
 
