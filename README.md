@@ -24,11 +24,8 @@ catkin_init_workspace
 ### Clone mikrorobot:
 ```bash
 git clone https://github.com/bjornite/mikrorobot ~/catkin_ws/src/mikrorobot
-
 cd ~/catkin_ws
-
 catkin_make
-
 rospack profile
 ```
 Sjekk at utskriften inneholder ~/catkin_ws/src
