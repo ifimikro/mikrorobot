@@ -9,7 +9,7 @@ Installer pakker vi bruker:
 sudo apt-get install ros-jade-usb-cam
 sudo apt-get install ros-jade-rosserial
 
-Sett opp et directory for ROS
+Sett opp et directory for ROS:
 
 # cd ~
 # mkdir catkin_ws
@@ -17,7 +17,7 @@ Sett opp et directory for ROS
 
 # catkin_init_workspace
 
-Clone mikrorobot
+Clone mikrorobot:
 
 # cd ~/catkin_ws/src
 # git clone https://github.com/bjornite/mikrorobot
@@ -30,10 +30,10 @@ Clone mikrorobot
 # rosrun mikrobo<tab>
     Dette bør autocomplete til mikrorobot
 
-Last ned ROS Node Automator
+Last ned ROS Node Automator:
 
 # cd ~
 # mkdir RNA
 # cd RNA
-#git clone https://github.com/ymli81/RosNodeAutomator
+# git clone https://github.com/ymli81/RosNodeAutomator
 
