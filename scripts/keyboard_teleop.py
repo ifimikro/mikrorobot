@@ -23,14 +23,12 @@ This file is part of RNA - The Ros Node Automator.
 #  Ros imports
 import rospy
 import roslib; roslib.load_manifest('mikrorobot')
-import getch
 
 ## message import format:
 ##from MY_PACKAGE_NAME.msg import MY_MESSAGE_NAME
 #from   mikrorobot.msg import  UInt16
 
 from std_msgs.msg import UInt16
-
 
 ##############################################################
 ##   Message Callbacks
@@ -46,9 +44,9 @@ from std_msgs.msg import UInt16
 def getDirection():
     c = getch()
     if c == 'w':
-        return 1
-    elif c == 's':
         return 4
+    elif c == 's':
+        return 1
     elif c == 'a':
         return 2
     elif c == 'd':
@@ -100,6 +98,7 @@ getch = _Getch()
 # This is run once when the node is brought up (roslaunch or rosrun)
 if __name__ == '__main__':
     print "Hello world"
+    
     # get the node started first so that logging works from the get-go
     rospy.init_node("keyboard_teleop")
     rospy.loginfo("Started template python node: keyboard_teleop.")
@@ -147,11 +146,6 @@ while not rospy.is_shutdown():
     rospy.loginfo("keyboard_teleop: main loop")
     print(UInt16_obj1.data)
     rate.sleep()
-    ###############################################################
+###############################################################
 #
 # end of main wile loop
-
-
-##############################################################
-## Classes
-
