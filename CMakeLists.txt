@@ -21,8 +21,10 @@ project(mikrorobot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation rosserial_python usb_cam std_msgs )
+find_package(OpenCV 3.0 REQUIRED imgproc highgui HINTS /opt/ros/jade/share/OpenCV-3.1.0-dev)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs cv_bridge)
 
+message("**** " ${OpenCV_CONFIG_PATH})
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -109,7 +111,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation rosseria
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES beginner_tutorials
-   CATKIN_DEPENDS roscpp rospy message_runtime rosserial_python usb_cam std_msgs 
+   CATKIN_DEPENDS roscpp rospy message_runtime tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -122,6 +124,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -141,6 +144,10 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
+add_executable(mikrobot_tf_broadcaster src/mikrobot_tf_broadcaster.cpp)
+target_link_libraries(mikrobot_tf_broadcaster ${catkin_LIBRARIES})
+add_executable(maskinsyn_aruco src/maskinsyn_aruco.cpp)
+target_link_libraries(maskinsyn_aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
 
