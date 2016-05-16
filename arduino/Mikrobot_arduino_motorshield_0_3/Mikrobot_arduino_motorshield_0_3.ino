@@ -14,7 +14,7 @@ AF_DCMotor motor2(2);
 ros::NodeHandle  nh;
 
 // Global variables to fiddle with motor speeds.
-int speed_accelerate = 15; // How much to increment speed with.
+int speed_accelerate = 5; // How much to increment speed with.
 int speed_standard = 50; // Standard starting speed when changing from L/R/F/B.
 
 int prev_state; 

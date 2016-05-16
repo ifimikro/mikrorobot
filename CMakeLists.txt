@@ -144,10 +144,10 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(mikrobot_tf_broadcaster src/mikrobot_tf_broadcaster.cpp)
-target_link_libraries(mikrobot_tf_broadcaster ${catkin_LIBRARIES})
-add_executable(maskinsyn_aruco src/maskinsyn_aruco.cpp)
-target_link_libraries(maskinsyn_aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_executable(mikrorobot_tf_broadcaster src/mikrorobot_tf_broadcaster.cpp)
+target_link_libraries(mikrorobot_tf_broadcaster ${catkin_LIBRARIES})
+#add_executable(maskinsyn_aruco src/maskinsyn_aruco.cpp)
+#target_link_libraries(maskinsyn_aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
 

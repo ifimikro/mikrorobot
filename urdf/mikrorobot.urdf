@@ -1,10 +1,10 @@
-<robot name="mikrobot">
+<robot name="mikrorobot">
   <!-- Base link -->
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-          <box size="1 0.5 0.25"/>
+          <box size="0.173 0.1 0.082"/>
       </geometry>
       <material name="yellow">
         <color rgba="0.8 0.8 0 1"/>
@@ -17,7 +17,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
       <geometry>
-          <cylinder length="0.1" radius="0.2" />
+          <cylinder length="0.015" radius="0.042" />
       </geometry>
       <material name="black">
         <color rgba="0.05 0.05 0.05 1"/>
@@ -27,7 +27,7 @@
   <joint name="joint_f_r_wheel" type="continuous">
     <parent link="base_link"/>
     <child link="f_r_wheel"/>
-    <origin xyz="0.25 -0.30 0" rpy="0 0 0" /> 
+    <origin xyz="0.065 -0.07 0" rpy="0 0 0" /> 
     <axis xyz="0 1 0" rpy="0 0 0" />
   </joint>  
 
@@ -36,7 +36,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
       <geometry>
-          <cylinder length="0.1" radius="0.2" />
+          <cylinder length="0.015" radius="0.042" />
       </geometry>
       <material name="black"/>
     </visual>
@@ -44,7 +44,7 @@
   <joint name="joint_b_r_wheel" type="continuous">
     <parent link="base_link"/>
     <child link="b_r_wheel"/>
-    <origin xyz="-0.25 -0.30 0" rpy="0 0 0" /> 
+    <origin xyz="-0.065 -0.07 0" rpy="0 0 0" /> 
     <axis xyz="0 1 0" rpy="0 0 0" />
   </joint>  
 
@@ -53,7 +53,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
       <geometry>
-          <cylinder length="0.1" radius="0.2" />
+          <cylinder length="0.015" radius="0.042" />
       </geometry>
       <material name="black"/>
     </visual>
@@ -61,7 +61,7 @@
   <joint name="joint_f_l_wheel" type="continuous">
     <parent link="base_link"/>
     <child link="f_l_wheel"/>
-    <origin xyz="0.25 0.30 0" rpy="0 0 0" /> 
+    <origin xyz="0.065 0.07 0" rpy="0 0 0" /> 
     <axis xyz="0 1 0" rpy="0 0 0" />
   </joint>
 
@@ -70,7 +70,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
       <geometry>
-          <cylinder length="0.1" radius="0.2" />
+          <cylinder length="0.015" radius="0.042" />
       </geometry>
       <material name="black"/>
     </visual>
@@ -78,7 +78,7 @@
   <joint name="joint_b_l_wheel" type="continuous">
     <parent link="base_link"/>
     <child link="b_l_wheel"/>
-    <origin xyz="-0.25 0.30 0" rpy="0 0 0" /> 
+    <origin xyz="-0.065 0.07 0" rpy="0 0 0" /> 
     <axis xyz="0 1 0" rpy="0 0 0" />
   </joint>
 
@@ -87,7 +87,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-          <cylinder length="0.2" radius="0.1" />
+          <cylinder length="0.03" radius="0.02" />
       </geometry>
       <material name="black"/>
     </visual>
@@ -95,7 +95,7 @@
   <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera"/>
-    <origin xyz="0.4 0 0.225" rpy="0 1.570795 0" /> 
+    <origin xyz="0.075 0 0.07" rpy="-1.570795 0 -1.570795" /> 
     <axis xyz="0 1 0" rpy="0 0 0" />
   </joint>
 </robot>
