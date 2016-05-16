@@ -1,0 +1,27 @@
+<launch>
+
+  <!-- Disse første pakkene kjøres på den maskinen du launcher denne filen i -->
+
+  <!-- the keyboard listener -->
+  <node name="keyboard_teleop" pkg="mikrorobot" type="keyboard_teleop" />
+  
+  <node name="republish" type="republish" pkg="image_transport" args="compressed in:=/usb_cam/image_raw raw out:=/camera/image_raw" />
+  
+  <node pkg="image_view" type="image_view" name="image_view" respawn="false" output="log">
+        <remap from="/image" to="/camera/image_raw" />
+	<param name="autosize" value="true"/>
+  </node>
+
+
+  <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
+  
+  <machine name="ubuntu" address="192.168.38.100" env-loader="/opt/ros/jade/env.sh" user="ubuntu" password="ubuntu" default="false"/>
+  <!-- KONFIGURER ENV.SH PÅ RASPBERRY PIEN-->
+  
+  <!-- the camera listener -->
+  <node name="usb_cam_node" pkg="usb_cam" type="usb_cam_node" args="_video_device:=/dev/video0" />
+
+
+  <node name="rosserial_python" pkg="rosserial_python" type="serial_node" />
+  
+</launch>

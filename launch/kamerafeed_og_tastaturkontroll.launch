@@ -1,0 +1,28 @@
+<launch>
+
+  <!-- Disse første pakkene kjøres på den maskinen du launcher denne filen i -->
+
+  <!-- node for tastaturkontroll over roboten -->
+  <node name="keyboard_teleop" pkg="mikrorobot" type="keyboard_teleop.py" output="screen" launch-prefix="xterm -e" />
+
+  <!-- node som henter komprimerte bilder fra roboten og publiserer dem som ukomprimerte bilder -->
+  <node name="republish" type="republish" pkg="image_transport" args="compressed in:=/usb_cam/image_raw raw out:=/camera/image_raw" />
+
+  <!-- node for å vise bildene på skjermen -->
+  <node pkg="image_view" type="image_view" name="image_view" respawn="false" output="log">
+        <remap from="/image" to="/camera/image_raw" />
+	<param name="autosize" value="true"/>
+  </node>
+
+  <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
+  
+  <machine name="ubuntu" address="192.168.38.100" env-loader="/opt/ros/jade/env.sh" user="ubuntu" password="ubuntu" default="false"/>
+  <!-- KONFIGURER ENV.SH PÅ RASPBERRY PIEN-->
+  
+  <!-- node for å hente bilder fra webkameraet -->
+  <node name="usb_cam" machine="ubuntu" pkg="usb_cam" type="usb_cam_node" />
+
+  <!-- node for å kommunisere med arduinoen -->
+  <node name="rosserial_python" machine="ubuntu" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0"/>
+  
+</launch>

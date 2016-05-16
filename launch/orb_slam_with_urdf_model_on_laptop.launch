@@ -1,0 +1,34 @@
+<!-- launchfil for å kjøre orb_slam med robotmodell i rviz og kameraet koblet til laptopen-->
+
+<launch>
+
+
+  <!-- node som henter komprimerte bilder fra roboten og publiserer dem som ukomprimerte bilder -->
+  <node name="republish" type="republish" pkg="image_transport" args="compressed in:=/usb_cam/image_raw raw out:=/camera/image_raw" />
+
+  <!-- node for å vise bildene på skjermen -->
+  <node pkg="image_view" type="image_view" name="image_view" respawn="false" output="log">
+        <remap from="/image" to="/ORB_SLAM/Frame" />
+	<param name="autosize" value="true"/>
+  </node>
+
+  <arg name="model" value="src/mikrorobot/urdf/mikrorobot.urdf"/>
+  <arg name="gui" default="False" />
+  <param name="robot_description" textfile="$(arg model)" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mikrorobot)/rviz/orb_slam_with_model.rviz" required="true" />
+
+  <!-- monocular SLAM -->
+  <node pkg="orb_slam" type="orb_slam" name="orb_slam"  args="Data/ORBvoc.txt Data/Settings.yaml" cwd="node" output="screen" />
+
+  <node pkg="mikrorobot" name="mikrorobot_tf_broadcaster" type="mikrorobot_tf_broadcaster" />
+
+  
+  <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
+  
+  <!-- node for å hente bilder fra webkameraet -->
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" args="_video_device:=/dev/video1" />
+  
+</launch>

@@ -1,0 +1,31 @@
+<!-- launchfil for mikrorobot. Kjører kamerafeed til orb_slam og lagrer kartet-->
+
+<launch>
+
+  <!-- Disse første pakkene kjøres på den maskinen du launcher denne filen i -->
+
+  <!-- node som henter komprimerte bilder fra roboten og publiserer dem som ukomprimerte bilder -->
+  <node name="republish" type="republish" pkg="image_transport" args="compressed in:=/usb_cam/image_raw raw out:=/camera/image_raw" />
+
+  <!--rviz-node for å vise kartet fra orb_slam -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find orb_slam)/Data/rviz.rviz" output="log"/>
+
+  <!-- monocular SLAM -->
+  <node pkg="orb_slam" type="orb_slam" name="orb_slam"  args="Data/ORBvoc.txt Data/Settings.yaml" cwd="node" output="screen" />
+
+  <node pkg="mikrorobot" type="mikrobot_tf_broadcaster" name="mikrobot_tf_broadcaster" />
+
+  <!-- node for å hente bilder fra webkameraet -->
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" args="_video_device:=/dev/video1" />
+
+  <!-- node for å vise bildene på skjermen -->
+  <node pkg="image_view" type="image_view" name="image_view" respawn="false" output="log">
+        <remap from="/image" to="/ORB_SLAM/Frame" />
+	<param name="autosize" value="true"/>
+  </node>
+
+  <node pkg="octomap_server" name="octomap_saver" type="octomap_saver" args="-f ~/catkin_ws/src/mikrorobot/maps/map.bt">
+  <remap from="/octomap_full" to="/orb_slam/octomap_full" />
+  </node>
+  
+</launch>
