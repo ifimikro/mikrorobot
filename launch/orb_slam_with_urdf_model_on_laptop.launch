@@ -25,9 +25,6 @@
 
   <node pkg="mikrorobot" name="mikrorobot_tf_broadcaster" type="mikrorobot_tf_broadcaster" />
 
-  
-  <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
-  
   <!-- node for å hente bilder fra webkameraet -->
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" args="_video_device:=/dev/video1" />
   

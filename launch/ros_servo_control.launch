@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- node for kommandolinjeinput av tall -->
+  <node name="commandline_servo_control" pkg="mikrorobot" type="commandline_servo_control.py" output="screen"/>
+
+  <!-- node for å kommunisere med arduinoen -->
+  <node name="rosserial_python" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0"/>
+  
+</launch>

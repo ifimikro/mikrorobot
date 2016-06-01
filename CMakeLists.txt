@@ -21,8 +21,12 @@ project(mikrorobot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(OpenCV 3.0 REQUIRED imgproc highgui HINTS /opt/ros/jade/share/OpenCV-3.1.0-dev)
-find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs cv_bridge)
+find_package(OpenCV 2 REQUIRED)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs cv_bridge image_transport)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+set(SOURCE_FILES src/image_converter.cpp)
 
 message("**** " ${OpenCV_CONFIG_PATH})
 ## System dependencies are found with CMake's conventions
@@ -111,7 +115,7 @@ message("**** " ${OpenCV_CONFIG_PATH})
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES beginner_tutorials
-   CATKIN_DEPENDS roscpp rospy message_runtime tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs
+   CATKIN_DEPENDS roscpp rospy message_runtime tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs image_transport
 #  DEPENDS system_lib
 )
 
@@ -148,7 +152,10 @@ add_executable(mikrorobot_tf_broadcaster src/mikrorobot_tf_broadcaster.cpp)
 target_link_libraries(mikrorobot_tf_broadcaster ${catkin_LIBRARIES})
 #add_executable(maskinsyn_aruco src/maskinsyn_aruco.cpp)
 #target_link_libraries(maskinsyn_aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
-
+add_executable(image_converter ${SOURCE_FILES})
+target_link_libraries(image_converter ${catkin_LIBRARIES} ${OpenCV_LIBS})
+#add_executable(image_converter src/image_converter.cpp)
+#target_link_libraries(image_converter ${catkin_LIBRARIES})
 
 
 #############
