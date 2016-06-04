@@ -21,14 +21,14 @@ project(mikrorobot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(OpenCV 2 REQUIRED)
+## find_package(OpenCV 2 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs cv_bridge image_transport)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES src/image_converter.cpp)
+##set(SOURCE_FILES src/image_converter.cpp)
 
-message("**** " ${OpenCV_CONFIG_PATH})
+##message("**** " ${OpenCV_CONFIG_PATH})
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -128,7 +128,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
+  ##${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -150,12 +150,9 @@ include_directories(
 
 add_executable(mikrorobot_tf_broadcaster src/mikrorobot_tf_broadcaster.cpp)
 target_link_libraries(mikrorobot_tf_broadcaster ${catkin_LIBRARIES})
-#add_executable(maskinsyn_aruco src/maskinsyn_aruco.cpp)
-#target_link_libraries(maskinsyn_aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
-add_executable(image_converter ${SOURCE_FILES})
-target_link_libraries(image_converter ${catkin_LIBRARIES} ${OpenCV_LIBS})
-#add_executable(image_converter src/image_converter.cpp)
-#target_link_libraries(image_converter ${catkin_LIBRARIES})
+
+##add_executable(image_converter ${SOURCE_FILES})
+##target_link_libraries(image_converter ${catkin_LIBRARIES}  ${OpenCV_LIBS})
 
 
 #############
