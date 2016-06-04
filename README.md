@@ -25,7 +25,7 @@ catkin_init_workspace
 ```
 
 ### Fork repoet
-Ga til https://github.com/bjornite/mikrorobot, og trykk fork knappen :)
+Gå til https://github.com/bjornite/mikrorobot, og trykk på fork knappen :)
 
 ### Clone mikrorobot:
 ```bash
