@@ -54,7 +54,7 @@ Dette bør autocomplete til mikrorobot
 git clone https://github.com/ymli81/RosNodeAutomator ~/RNA/RosNodeAutomator
 ```
 
-### Ps:
+##### Ps:
 Det kan være en ide å automatisk source setup.bash til din init fil ( i dette tilfellet .bashrc). eg
 ```bash
 echo "source ~/catkin_ws/devel/setup.bash" >> .bashrc
