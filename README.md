@@ -34,14 +34,18 @@ cd ~/catkin_ws
 catkin_make
 rospack profile
 ```
-Kjør ```bash rospack profile | grep catkin ``` Dersom den produserer tekst, så er alt ok.
+Kjør 
+```bash
+rospack profile | grep catkin 
+``` 
+Dersom den produserer tekst, så er alt ok.
 Dersom den ikke produserer tekst, sjekk at du har sourca setup.bash
 ``` bash
 source ~/catkin_ws/devel/setup.bash
 ```
 
 ```bash
-rosrun mikrobo<tab>
+rosrun mikror<tab>
 ```
 Dette bør autocomplete til mikrorobot
 
@@ -50,8 +54,8 @@ Dette bør autocomplete til mikrorobot
 git clone https://github.com/ymli81/RosNodeAutomator ~/RNA/RosNodeAutomator
 ```
 
-##### Ps:
-Det kan vare en ide og automatisk source setup.bash til din init fil ( i dette tilfellet .bashrc). eg
+### Ps:
+Det kan være en ide å automatisk source setup.bash til din init fil ( i dette tilfellet .bashrc). eg
 ```bash
 echo "source ~/catkin_ws/devel/setup.bash" >> .bashrc
 ```
