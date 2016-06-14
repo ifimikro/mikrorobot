@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<!-- Revolute-Revolute Manipulator -->
+<!-- Mikrorobot Mark I -->
 <robot name="mikrorobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+  
+  <!-- rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot_from_xacro.urdf -urdf -z 1 -model mikrorobot -->
+  
   <!-- Constants for robot dimensions -->
   <xacro:property name="PI" value="3.1415926535897931"/>
   <xacro:property name="mass" value="10" /> <!-- arbitrary value for mass -->
@@ -15,7 +17,9 @@
   <xacro:property name="wheel_offset_x" value="0.2" /> <!-- Wheel offset depth-direction -->
   <xacro:property name="wheel_offset_y" value="0.2" /> <!-- Wheel offset width-direction -->
   <xacro:property name="wheel_offset_z" value="${-height/2 + 0.05}" /> <!-- Wheel offset height-direction -->
-  
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find mikrorobot)/urdf/mikrorobot.gazebo" />
 
     <!-- Base Link -->
   <link name="base_link">
@@ -173,7 +177,7 @@
       <material name="black"/>
     </visual>
 
-        <collision>
+    <collision>
       <origin xyz="0 0 0" rpy="1.570795 0 0"/>
       <geometry>
           <cylinder length="${wheel_width}" radius="${wheel_radius}" />
@@ -193,7 +197,7 @@
   </link>
 
     <!-- Camera -->
-  <link name="camera">
+  <link name="camera_link">
     
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -219,9 +223,9 @@
   
   <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="camera"/>
-    <origin xyz="${depth/2 - 0.05} 0 ${height/2}" rpy="-1.570795 0 -1.570795" /> 
-    <axis xyz="0 1 0" rpy="0 0 0" />
+    <child link="camera_link"/>
+    <origin xyz="${depth/2 - 0.03} 0 ${height/2 + 0.02}" rpy="0 0 0" /> 
+    <axis xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
   <transmission name="tran_f_r">
