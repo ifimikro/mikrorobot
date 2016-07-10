@@ -14,7 +14,7 @@
 <gazebo>
   <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
     <updateRate>100.0</updateRate>
-    <robotNamespace>/</robotNamespace>
+    <robotNamespace>/mikrorobot</robotNamespace>
     <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
     <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
     <leftRearJoint>back_left_wheel_joint</leftRearJoint>
@@ -54,10 +54,20 @@
   </gazebo>
 
 <!-- frame -->
-<gazebo reference="base_link">
-  <material>Gazebo/Red</material>
-</gazebo>
+  <gazebo reference="base_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
 
+      <!-- IMU -->
+  <gazebo>
+    <plugin name="gazebo_imu_sensor" filename ="libgazebo_ros_imu.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>imu_data</topicName>
+      <serviceName>imu_service</serviceName>
+    </plugin>
+  </gazebo>
 <!-- camera -->
   <gazebo reference="camera_link">
     <sensor type="camera" name="camera1">
