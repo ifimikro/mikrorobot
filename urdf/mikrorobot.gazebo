@@ -10,17 +10,53 @@
     </plugin>
   </gazebo>
 
-<!-- planar_movement plugin -->
-  <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>base_link</robotBaseFrame>
-    </plugin>
+<!-- skid steering plugin -->
+<gazebo>
+  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+    <updateRate>100.0</updateRate>
+    <robotNamespace>/</robotNamespace>
+    <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
+    <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
+    <leftRearJoint>back_left_wheel_joint</leftRearJoint>
+    <rightRearJoint>back_right_wheel_joint</rightRearJoint>
+    <wheelSeparation>0.4</wheelSeparation>
+    <wheelDiameter>0.2</wheelDiameter>
+    <robotBaseFrame>base_link</robotBaseFrame>
+    <torque>0.2</torque>
+    <topicName>cmd_vel</topicName>
+    <broadcastTF>false</broadcastTF>
+  </plugin>
+</gazebo>
+
+<!-- wheels -->
+  <gazebo reference="front_left_wheel">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Black</material>
   </gazebo>
 
+  <gazebo reference="front_right_wheel">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="back_left_wheel">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="back_right_wheel">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+<!-- frame -->
+<gazebo reference="base_link">
+  <material>Gazebo/Red</material>
+</gazebo>
 
 <!-- camera -->
   <gazebo reference="camera_link">
