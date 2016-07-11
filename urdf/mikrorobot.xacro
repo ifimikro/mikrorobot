@@ -228,6 +228,39 @@
     <axis xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
+      <!-- Laser -->
+  <link name="laser_link">
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	<cylinder length="0.03" radius ="0.02"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+          <cylinder length="0.03" radius="0.02" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  
+  <joint name="laser_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser_link"/>
+    <origin xyz="0 0 ${height/2 + 0.02}" rpy="0 0 0" /> 
+    <axis xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+  <!-- Transmissions -->
   <transmission name="tran_f_r">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_right_wheel_joint">
