@@ -24,7 +24,7 @@
       <robotBaseFrame>base_link</robotBaseFrame>
       <torque>0.2</torque>
       <topicName>cmd_vel</topicName>
-      <broadcastTF>false</broadcastTF>
+      <broadcastTF>true</broadcastTF>
     </plugin>
   </gazebo>
 
@@ -101,8 +101,8 @@
       <alwaysOn>true</alwaysOn>
       <updateRate>10.0</updateRate>
       <bodyName>base_link</bodyName>
-      <topicName>imu_data</topicName>
-      <serviceName>imu_service</serviceName>
+      <topicName>/mikrorobot/imu_data</topicName>
+      <serviceName>/mikrorobot/imu_service</serviceName>
     </plugin>
   </gazebo>
   
