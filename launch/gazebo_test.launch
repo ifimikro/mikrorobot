@@ -5,7 +5,6 @@
   
   <!-- Load robot description -->
   <param name="robot_description" command="cat $(find mikrorobot)/urdf/mikrorobot.urdf" />
-
   
   <!-- joint state controller -->
    <!-- load configuration -->
@@ -45,11 +44,10 @@
   </include>
 
   <!-- Spawn mikrorobot into Gazebo -->
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find mikrorobot)/urdf/mikrorobot.urdf -urdf -z 1 -model mikro" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find mikrorobot)/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot" />
 
     <!-- node for mapping fra lidardata -->
-  <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=/mikrorobot/laser/scan">
-  </node>
+  <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=/mikrorobot/laser/scan"/>
 
   <!-- node for å vise bildene på skjermen -->
   <node pkg="image_view" type="image_view" name="image_view" respawn="false" output="log">
