@@ -6,10 +6,24 @@
 
 http://wiki.ros.org/jade/Installation/Ubuntu
 
+Etter at ROS er installert, installer robotsimulatoren Gazebo.
+
+```bash
+sudo apt-get install -y libgazebo5-dev
+```
+Sjekk at Gazebo virker ved å kjøre det fra terminalen.
+
 Installer pakker vi bruker:
 ```bash
 sudo apt-get install ros-jade-usb-cam
 sudo apt-get install ros-jade-rosserial
+sudo apt-get install ros-jade-navigation
+sudo apt-get install ros-jade-joy
+sudo apt-get install ros-jade-teleop-twist-joy
+sudo apt-get install ros-jade-robot-pose-ekf
+sudo apt-get install ros-jade-gmapping
+sudo apt-get install ros-jade-amcl
+sudo apt-get install ros-jade-gazebo-ros-pkgs
 ```
 
 ### Sett opp et directory for ROS:
@@ -25,7 +39,7 @@ catkin_init_workspace
 ```
 
 ### Fork repoet
-Gå til https://github.com/bjornite/mikrorobot, og trykk på fork knappen :)
+Gå til https://github.com/ifimikro/mikrorobot, og trykk på fork knappen :)
 
 ### Clone mikrorobot:
 ```bash
