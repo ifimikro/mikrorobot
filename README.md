@@ -9,6 +9,7 @@ http://wiki.ros.org/jade/Installation/Ubuntu
 Etter at ROS er installert, installer robotsimulatoren Gazebo.
 
 ```bash
+sudo apt-get install gazebo5
 sudo apt-get install -y libgazebo5-dev
 ```
 Sjekk at Gazebo virker ved å kjøre det fra terminalen.
