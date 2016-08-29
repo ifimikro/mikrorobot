@@ -2,7 +2,9 @@
 <!-- Mikrorobot Mark I -->
 <robot name="mikrorobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
   
-  <!-- rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot_from_xacro.urdf -urdf -z 1 -model mikrorobot -->
+  <!-- Use this command to spawn the model in gazebo: rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot -->
+
+  <!-- Use this command to generate the urdf (use two -'s in front of inorder): rosrun xacro xacro -inorder mikrorobot.xacro > mikrorobot.urdf -->
   
   <!-- Constants for robot dimensions -->
   <xacro:property name="PI" value="3.1415926535897931"/>
