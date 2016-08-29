@@ -25,6 +25,8 @@ sudo apt-get install ros-jade-robot-pose-ekf
 sudo apt-get install ros-jade-gmapping
 sudo apt-get install ros-jade-amcl
 sudo apt-get install ros-jade-gazebo-ros-pkgs
+sudo apt-get install ros-jade-ros-control
+sudo apt-get install ros-jade-ros-controllers
 ```
 
 ### Sett opp et directory for ROS:
