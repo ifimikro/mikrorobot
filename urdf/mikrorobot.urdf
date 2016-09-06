@@ -4,7 +4,7 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <!-- Mikrorobot Mark I -->
-<robot name="mikrorobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="mikrorobot" xmlns:xacro="http://www.roxs.org/wiki/xacro">
   <!-- Use this command to spawn the model in gazebo: rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot -->
   <!-- Use this command to generate the urdf (use two -'s in front of inorder): rosrun xacro xacro -inorder mikrorobot.xacro > mikrorobot.urdf -->
   <!-- Wheel offset height-direction -->
@@ -17,19 +17,13 @@
   </gazebo>
   <!-- skid steering plugin -->
   <gazebo>
-    <plugin filename="libgazebo_ros_skid_steer_drive.so" name="skid_steer_drive_controller">
-      <updateRate>100.0</updateRate>
+    <plugin filename="libgazebo_ros_planar_move.so" name="object_controller">
       <robotNamespace>/mikrorobot</robotNamespace>
-      <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
-      <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
-      <leftRearJoint>back_left_wheel_joint</leftRearJoint>
-      <rightRearJoint>back_right_wheel_joint</rightRearJoint>
-      <wheelSeparation>0.4</wheelSeparation>
-      <wheelDiameter>0.2</wheelDiameter>
-      <robotBaseFrame>base_link</robotBaseFrame>
-      <torque>0.3</torque>
-      <topicName>cmd_vel</topicName>
-      <broadcastTF>true</broadcastTF>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>skid_odom</odometryTopic>
+      <odometryFrame>skid_odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
     </plugin>
   </gazebo>
   <!-- lidar -->
@@ -90,7 +84,7 @@
     <material>Gazebo/Black</material>
   </gazebo>
   <!-- frame -->
-  <gazebo reference="base_link">
+  <gazebo reference="base_footprint">
     <material>Gazebo/Red</material>
   </gazebo>
   <!-- IMU -->
@@ -98,9 +92,19 @@
     <plugin filename="libgazebo_ros_imu.so" name="gazebo_imu_sensor">
       <alwaysOn>true</alwaysOn>
       <updateRate>10.0</updateRate>
-      <bodyName>base_link</bodyName>
+      <bodyName>base_footprint</bodyName>
       <topicName>/mikrorobot/imu_data</topicName>
       <serviceName>/mikrorobot/imu_service</serviceName>
+    </plugin>
+  </gazebo>
+  <!-- Odometry -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="gazebo_p3d_sensor">
+      <gaussianNoise>1.0</gaussianNoise>
+      <frameName>map</frameName>
+      <bodyName>base_link</bodyName>
+      <topicName>/odometri</topicName>
+      <updateRate>30.0</updateRate>
     </plugin>
   </gazebo>
   <!-- camera -->
@@ -143,6 +147,20 @@
       </plugin>
     </sensor>
   </gazebo>
+  <!-- root link, on the ground just below the model origin -->
+  <link name="base_footprint">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="base_link_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0 0.085"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
   <!-- Base Link -->
   <link name="base_link">
     <collision>

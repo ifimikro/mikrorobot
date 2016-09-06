@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- Mikrorobot Mark I -->
-<robot name="mikrorobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="mikrorobot" xmlns:xacro="http://www.roxs.org/wiki/xacro">
   
   <!-- Use this command to spawn the model in gazebo: rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot -->
 
@@ -23,6 +23,22 @@
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find mikrorobot)/urdf/mikrorobot.gazebo" />
 
+  <!-- root link, on the ground just below the model origin -->
+  <link name="base_footprint">
+   <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="base_link_joint" type="fixed">
+    <origin xyz="0.0 0 ${height/2}" rpy="0 0 0" />
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+  </joint>
+  
     <!-- Base Link -->
   <link name="base_link">
     <collision>

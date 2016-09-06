@@ -5,9 +5,7 @@
   
   <!-- Load robot description -->
   <param name="robot_description" command="cat $(find mikrorobot)/urdf/mikrorobot.urdf" />
-
-  <!-- use gazebos clock -->
-  <param name="/use_sim_time" value="true"/>
+  
   <!-- joint state controller -->
    <!-- load configuration -->
   <rosparam command="load" file="$(find joint_state_controller)/joint_state_controller.yaml" />
@@ -22,8 +20,8 @@
   <!-- This node combines different odometry sources to provide robust odometry -->
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
     <remap from="/imu_data" to="/mikrorobot/imu_data"/>
-    <remap from="/odom" to="/odometri"/>
-    <param name="output_frame" value="/odom"/>
+    <remap from="/odom" to="/mikrorobot/odom"/>
+    <param name="output_frame" value="odom"/>
     <param name="base_footprint_frame" value="base_link"/>
     <param name="freq" value="30.0"/>
     <param name="sensor_timeout" value="1.0"/>
@@ -35,18 +33,21 @@
   </node>
 
   <!-- Start gazebo -->
-  <node name="gazebo" pkg="gazebo_ros" type="gzserver" respawn="false" output="screen" args="-e ode worlds/willowgarage.world" >
-  </node>
-
-  <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
+    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/willowgarage.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
 
   <!-- Spawn mikrorobot into Gazebo -->
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find mikrorobot)/urdf/mikrorobot.urdf -urdf -z 0.01 -model mikrorobot" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find mikrorobot)/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot" />
 
     <!-- node for mapping fra lidardata -->
-  <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=/mikrorobot/laser/scan">
-
-  </node>
+  <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" args="scan:=/mikrorobot/laser/scan"/>
 
   <!-- node for å vise bildene på skjermen -->
   <node pkg="image_view" type="image_view" name="image_view" respawn="false" output="log">
