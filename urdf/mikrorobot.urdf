@@ -20,8 +20,8 @@
     <plugin filename="libgazebo_ros_planar_move.so" name="object_controller">
       <robotNamespace>/mikrorobot</robotNamespace>
       <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>skid_odom</odometryTopic>
-      <odometryFrame>skid_odom</odometryFrame>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
       <odometryRate>20.0</odometryRate>
       <robotBaseFrame>base_footprint</robotBaseFrame>
     </plugin>
@@ -102,9 +102,9 @@
     <plugin filename="libgazebo_ros_p3d.so" name="gazebo_p3d_sensor">
       <gaussianNoise>1.0</gaussianNoise>
       <frameName>map</frameName>
-      <bodyName>base_link</bodyName>
+      <bodyName>base_footprint</bodyName>
       <topicName>/odometri</topicName>
-      <updateRate>30.0</updateRate>
+      <updateRate>10.0</updateRate>
     </plugin>
   </gazebo>
   <!-- camera -->

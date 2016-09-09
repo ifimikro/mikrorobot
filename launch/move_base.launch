@@ -31,7 +31,7 @@
   <param name="laser_likelihood_max_dist" value="2.0"/>
   <param name="update_min_d" value="0.2"/>
   <param name="update_min_a" value="0.5"/>
-  <param name="odom_frame_id" value="/odom"/>
+  <param name="odom_frame_id" value="odom"/>
   <param name="resample_interval" value="1"/>
   <param name="transform_tolerance" value="0.1"/>
   <param name="recovery_alpha_slow" value="0.0"/>
@@ -40,7 +40,6 @@
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <remap from="cmd_vel" to="/mikrorobot/cmd_vel"/>
-    <remap from="odom" to="/mikrorobot/odom" />
     <rosparam file="$(find mikrorobot)/navconfig/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find mikrorobot)/navconfig/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find mikrorobot)/navconfig/local_costmap_params.yaml" command="load" />
