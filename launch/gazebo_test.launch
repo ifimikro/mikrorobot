@@ -9,8 +9,6 @@
   <!-- joint state controller -->
    <!-- load configuration -->
   <rosparam command="load" file="$(find joint_state_controller)/joint_state_controller.yaml" />
-  <!-- spawn controller -->
-  <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" output="screen" ns="/mikrorobot" args="back_left_wheel_position_controller back_right_wheel_position_controller front_left_wheel_position_controller front_right_wheel_position_controller joint_state_controller" />
 
   <!-- state publisher is absolutely necessary -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">

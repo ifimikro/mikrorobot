@@ -8,13 +8,6 @@
   <!-- Use this command to spawn the model in gazebo: rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot -->
   <!-- Use this command to generate the urdf (use two -'s in front of inorder): rosrun xacro xacro -inorder mikrorobot.xacro > mikrorobot.urdf -->
   <!-- Wheel offset height-direction -->
-  <!-- ros_control plugin -->
-  <gazebo>
-    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
-      <robotNamespace>/mikrorobot</robotNamespace>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
-  </gazebo>
   <!-- skid steering plugin -->
   <gazebo>
     <plugin filename="libgazebo_ros_skid_steer_drive.so" name="skid_steer_drive_controller">
