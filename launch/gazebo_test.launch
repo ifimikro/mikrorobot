@@ -30,6 +30,7 @@
     <param name="vo_used" value="false"/>
     <param name="debug" value="false"/>
     <param name="self_diagnose" value="false"/>
+    <param name="publish_tf" value="true"/>
   </node>
 
   <!-- Start gazebo -->
