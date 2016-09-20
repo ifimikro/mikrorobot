@@ -22,9 +22,10 @@ project(mikrorobot)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 
-find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs cv_bridge image_transport)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python std_msgs geometry_msgs sensor_msgs cv_bridge image_transport)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_PREFIX_PATH = "/opt/ros/kinetic/share")
 
 ##set(SOURCE_FILES src/image_converter.cpp)
 
@@ -108,7 +109,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES beginner_tutorials
-   CATKIN_DEPENDS roscpp rospy message_runtime tf rosserial_python usb_cam std_msgs geometry_msgs sensor_msgs image_transport
+   CATKIN_DEPENDS roscpp rospy message_runtime tf rosserial_python std_msgs geometry_msgs sensor_msgs image_transport
 #  DEPENDS system_lib
 )
 
@@ -119,6 +120,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  "/opt/ros/kinetic/share/"
   ${catkin_INCLUDE_DIRS}
   ##${OpenCV_INCLUDE_DIRS}
 )
