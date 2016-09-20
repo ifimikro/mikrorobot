@@ -2,31 +2,25 @@
 
 ## Setup
 
-### Installer ros jade
+### Installer ros kinetic
 
-http://wiki.ros.org/jade/Installation/Ubuntu
+http://wiki.ros.org/kinetic/Installation/Ubuntu
 
 Etter at ROS er installert, installer robotsimulatoren Gazebo.
 
-```bash
-sudo apt-get install gazebo5
-sudo apt-get install -y libgazebo5-dev
-```
-Sjekk at Gazebo virker ved å kjøre det fra terminalen.
-
 Installer pakker vi bruker:
 ```bash
-sudo apt-get install ros-jade-usb-cam
-sudo apt-get install ros-jade-rosserial
-sudo apt-get install ros-jade-navigation
-sudo apt-get install ros-jade-joy
-sudo apt-get install ros-jade-teleop-twist-joy
-sudo apt-get install ros-jade-robot-pose-ekf
-sudo apt-get install ros-jade-gmapping
-sudo apt-get install ros-jade-amcl
-sudo apt-get install ros-jade-gazebo-ros-pkgs
-sudo apt-get install ros-jade-ros-control
-sudo apt-get install ros-jade-ros-controllers
+sudo apt-get install ros-kinetic-usb-cam
+sudo apt-get install ros-kinetic-rosserial
+sudo apt-get install ros-kinetic-navigation
+sudo apt-get install ros-kinetic-joy
+sudo apt-get install ros-kinetic-teleop-twist-joy
+sudo apt-get install ros-kinetic-robot-pose-ekf
+sudo apt-get install ros-kinetic-gmapping
+sudo apt-get install ros-kinetic-amcl
+sudo apt-get install ros-kinetic-gazebo-ros-pkgs
+sudo apt-get install ros-kinetic-ros-control
+sudo apt-get install ros-kinetic-ros-controllers
 ```
 
 ### Sett opp et directory for ROS:
@@ -47,9 +41,9 @@ Gå til https://github.com/ifimikro/mikrorobot, og trykk på fork knappen :)
 ### Clone mikrorobot:
 ```bash
 git clone https://github.com/<ditt brukernavn>/mikrorobot ~/catkin_ws/src/mikrorobot
+git checkout kinetic-dev
 cd ~/catkin_ws
 catkin_make
-rospack profile
 ```
 Kjør 
 ```bash
