@@ -21,18 +21,11 @@ project(mikrorobot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation image_transport tf rosserial_python std_msgs geometry_msgs cv_bridge sensor_msgs )
 
-find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation tf rosserial_python std_msgs geometry_msgs sensor_msgs cv_bridge image_transport)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_PREFIX_PATH = "/opt/ros/kinetic/share")
-
-##set(SOURCE_FILES src/image_converter.cpp)
-
-##message("**** " ${OpenCV_CONFIG_PATH})
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-# find_package(OpenCV 2 REQUIRED)
+
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -106,10 +99,17 @@ set(CMAKE_PREFIX_PATH = "/opt/ros/kinetic/share")
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
+# catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES beginner_tutorials
+#  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+#  DEPENDS system_lib
+# )
+
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES beginner_tutorials
-   CATKIN_DEPENDS roscpp rospy message_runtime tf rosserial_python std_msgs geometry_msgs sensor_msgs image_transport
+   CATKIN_DEPENDS roscpp rospy message_runtime image_transport tf rosserial_python std_msgs geometry_msgs cv_bridge sensor_msgs 
 #  DEPENDS system_lib
 )
 
@@ -119,10 +119,9 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
+# include_directories(include)
 include_directories(
-  "/opt/ros/kinetic/share/"
   ${catkin_INCLUDE_DIRS}
-  ##${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -145,8 +144,6 @@ include_directories(
 add_executable(mikrorobot_tf_broadcaster src/mikrorobot_tf_broadcaster.cpp)
 target_link_libraries(mikrorobot_tf_broadcaster ${catkin_LIBRARIES})
 
-##add_executable(image_converter ${SOURCE_FILES})
-##target_link_libraries(image_converter ${catkin_LIBRARIES}  ${OpenCV_LIBS})
 
 
 #############
