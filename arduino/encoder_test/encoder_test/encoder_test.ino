@@ -5,7 +5,10 @@
 
 #include <PID_v1.h>
 #include <ros.h>
-#include <std_msgs/UInt32MultiArray.h>
+
+#include <std_msgs/MultiArrayLayout.h>
+#include <std_msgs/MultiArrayDimension.h>
+#include <std_msgs/Float32MultiArray.h>
 
 
 #define PIN_INPUT 0
@@ -14,7 +17,7 @@
 #define BACK_RIGHT_OUTPUT 4
 #define BACK_LEFT_OUTPUT 5
 
-ros::NodeHandle  nh;
+ros::NodeHandle nh;
 
 //Define Variables we'll be connecting to
 double Input[4], Output[4], Setpoint[4];
@@ -27,19 +30,33 @@ PID backRightPID(&Input[2], &Output[2], &Setpoint[2], Kp, Ki, Kd, DIRECT);
 PID backLeftPID(&Input[3],&Output[3], &Setpoint[3], Kp, Ki, Kd, DIRECT);
 
 
+
+std_msgs::Float32MultiArray msg;
+
+ros::Publisher pub("pid_outputs", &msg);
+
 //Callback function on new setpoint from ROS
-void motor_cb( const std_msgs::UInt32MultiArray& motor_cmds){
+void motor_cb( const std_msgs::Float32MultiArray& motor_cmds){
   Setpoint[0] = motor_cmds.data[0];
   Setpoint[1] = motor_cmds.data[1];
   Setpoint[2] = motor_cmds.data[2];
   Setpoint[3] = motor_cmds.data[3];
 }
+//Callback function on new motor speeds from ROS
+void motor_speed( const std_msgs::Float32MultiArray& motor_speeds){
+  Input[0] = motor_speeds.data[0];
+  Input[1] = motor_speeds.data[1];
+  Input[2] = motor_speeds.data[2];
+  Input[3] = motor_speeds.data[3];
+}
 
-ros::Subscriber<std_msgs::UInt32MultiArray> sub("motor_cmds", motor_cb);
-
+ros::Subscriber<std_msgs::Float32MultiArray> commands_sub("motor_cmds", motor_cb);
+ros::Subscriber<std_msgs::Float32MultiArray> speeds_sub("motor_speeds", motor_speed);
 
 void setup()
 {
+  //msg.layout.data_offset = 4;
+  msg.data_length = 4;
   //initialize the variables we're linked to
   Input[0] = 0;
   Input[1] = 0;
@@ -59,43 +76,37 @@ void setup()
   
   //Initialize ROS subscription
   nh.initNode();
-  nh.subscribe(sub);
-  
-  // start serial port at 9600 bps:
-  Serial1.begin(9600);
+  nh.advertise(pub);
+  nh.subscribe(commands_sub);
+  nh.subscribe(speeds_sub);
 
-  Serial2.begin(9600);
   
 }
 
 void loop()
 {
-  //Update setpoint
+  //Update setpoint and speeds
   nh.spinOnce();
-  delay(1);
-  //Get current speed
- if (Serial1.available() > 0) {
-    // get incoming byte:
-    Input[0] = Serial1.read();
-    Input[2] = Serial1.read();
-  }
-  if (Serial2.available() > 0) {
-    // get incoming byte:
-    Input[1] = Serial2.read();
-    Input[3] = Serial2.read();
-  }
   
   //Compute outputs
   frontRightPID.Compute();
   frontLeftPID.Compute();
   backRightPID.Compute();
   backLeftPID.Compute();
+
+  float data[4];
+
+  for(int i = 0; i < 4; i++) {
+    data[i] = Output[i];
+  }
+
+  msg.data = data;
   
-  //Write to motor controllers
-  analogWrite(FRONT_RIGHT_OUTPUT, Output[0]);
-  analogWrite(FRONT_LEFT_OUTPUT, Output[1]);
-  analogWrite(BACK_RIGHT_OUTPUT, Output[2]);
-  analogWrite(BACK_LEFT_OUTPUT, Output[3]); 
+  pub.publish(&msg);
+  delay(10);
+
 }
+
+
 
 
