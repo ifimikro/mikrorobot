@@ -5,6 +5,15 @@
 ### Installer ros jade
 
 http://wiki.ros.org/jade/Installation/Ubuntu
+* OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh: *
+Da vil ikke
+```bash
+source /opt/ros/<ditro>/setup.bash
+```
+virke. source den riktige configfilen. For zsh vil kommandoen være
+```bash
+source /opt/ros/<ditro>/setup.zsh
+```
 
 Etter at ROS er installert, installer robotsimulatoren Gazebo.
 
@@ -59,6 +68,12 @@ Dersom den produserer tekst, så er alt ok.
 Dersom den ikke produserer tekst, sjekk at du har sourca setup.bash
 ``` bash
 source ~/catkin_ws/devel/setup.bash
+```
+* OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh: *
+Da vil ikke dette virke.
+source den riktige configfilen. For zsh vil kommandoen være
+```bash
+source ~/catkin_ws/devel/setup.zsh
 ```
 
 ```bash
