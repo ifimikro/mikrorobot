@@ -5,14 +5,14 @@
 ### Installer ros kinetic
 
 http://wiki.ros.org/kinetic/Installation/Ubuntu
-* OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh: *
+**OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh:**
 Da vil ikke
 ```bash
-source /opt/ros/<ditro>/setup.bash
+source /opt/ros/<distro>/setup.bash
 ```
 virke. source den riktige configfilen. For zsh vil kommandoen være
 ```bash
-source /opt/ros/<ditro>/setup.zsh
+source /opt/ros/<distro>/setup.zsh
 ```
 
 Etter at ROS er installert, installer robotsimulatoren Gazebo.
@@ -63,8 +63,8 @@ Dersom den ikke produserer tekst, sjekk at du har sourca setup.bash
 ``` bash
 source ~/catkin_ws/devel/setup.bash
 ```
-* OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh: *
-Da vil ikke dette virke.
+**OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh:**
+vil ikke dette virke.
 source den riktige configfilen. For zsh vil kommandoen være
 ```bash
 source ~/catkin_ws/devel/setup.zsh
