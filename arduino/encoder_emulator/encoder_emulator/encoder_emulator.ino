@@ -1,19 +1,18 @@
 #include <ros.h>
-#include <std_msgs/MultiArrayLayout.h>
-#include <std_msgs/MultiArrayDimension.h>
-#include <std_msgs/Float32MultiArray.h>
+#include <sensor_msgs/JointState.h>
 
 
-ros::NodeHandle_<ArduinoHardware, 1, 1, 1024, 1024>  nh;
+ros::NodeHandle nh;
 
 
-std_msgs::Float32MultiArray msg;
+sensor_msgs::JointState msg;
 
 ros::Publisher pub("motor_speeds", &msg);
 
 void setup()
 {
-  msg.data_length = 4;
+  msg.velocity_length = 4;
+  
   //Initialize ROS subscription
   nh.initNode();
   nh.advertise(pub);
@@ -22,14 +21,14 @@ void setup()
 void loop()
 {
   nh.spinOnce();
-
+  
   float data[4];
 
   for (int i = 0; i < 4; i++) {
     data[i] = (float)analogRead(i);
   }
   
-  msg.data = data;
+  msg.velocity = data;
   
   pub.publish(&msg);
   delay(10);

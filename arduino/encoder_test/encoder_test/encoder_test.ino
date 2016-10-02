@@ -9,6 +9,7 @@
 #include <std_msgs/MultiArrayLayout.h>
 #include <std_msgs/MultiArrayDimension.h>
 #include <std_msgs/Float32MultiArray.h>
+#include <sensor_msgs/JointState.h>
 
 
 #define PIN_INPUT 0
@@ -16,6 +17,7 @@
 #define FRONT_LEFT_OUTPUT 3
 #define BACK_RIGHT_OUTPUT 4
 #define BACK_LEFT_OUTPUT 5
+
 
 ros::NodeHandle nh;
 
@@ -43,15 +45,15 @@ void motor_cb( const std_msgs::Float32MultiArray& motor_cmds){
   Setpoint[3] = motor_cmds.data[3];
 }
 //Callback function on new motor speeds from ROS
-void motor_speed( const std_msgs::Float32MultiArray& motor_speeds){
-  Input[0] = motor_speeds.data[0];
-  Input[1] = motor_speeds.data[1];
-  Input[2] = motor_speeds.data[2];
-  Input[3] = motor_speeds.data[3];
+void motor_speed( const sensor_msgs::JointState& motor_speeds){
+  Input[0] = motor_speeds.velocity[0];
+  Input[1] = motor_speeds.velocity[1];
+  Input[2] = motor_speeds.velocity[2];
+  Input[3] = motor_speeds.velocity[3];
 }
 
 ros::Subscriber<std_msgs::Float32MultiArray> commands_sub("motor_cmds", motor_cb);
-ros::Subscriber<std_msgs::Float32MultiArray> speeds_sub("motor_speeds", motor_speed);
+ros::Subscriber<sensor_msgs::JointState> speeds_sub("motor_speeds", motor_speed);
 
 void setup()
 {
@@ -68,6 +70,11 @@ void setup()
   Setpoint[2] = 0;
   Setpoint[3] = 0;
 
+  pinMode(2, OUTPUT); 
+  pinMode(3, OUTPUT); 
+  pinMode(4, OUTPUT); 
+  pinMode(5, OUTPUT); 
+
   //turn the PID on
   frontRightPID.SetMode(AUTOMATIC);
   frontLeftPID.SetMode(AUTOMATIC);
@@ -79,12 +86,12 @@ void setup()
   nh.advertise(pub);
   nh.subscribe(commands_sub);
   nh.subscribe(speeds_sub);
-
   
 }
 
 void loop()
 {
+
   //Update setpoint and speeds
   nh.spinOnce();
   
@@ -98,13 +105,12 @@ void loop()
 
   for(int i = 0; i < 4; i++) {
     data[i] = Output[i];
+    analogWrite(i+2, Output[i] / 4);
   }
 
   msg.data = data;
   
   pub.publish(&msg);
-  delay(10);
-
 }
 
 

@@ -17,6 +17,11 @@ def base_controller_emulator():
         position = Float32MultiArray()
         position.data = [150*math.sin(x%3),160*math.cos(x%2),190*math.sin(x%1.7),200*math.cos(x%1)]        
         x = x + 0.01
+        if (position.data[0] > 128): 
+            position.data[0] = 255 
+        else:
+            position.data[0] = 0
+        
         rospy.loginfo(position)
         pub.publish(position)
         rate.sleep()
