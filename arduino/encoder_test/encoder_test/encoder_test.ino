@@ -19,7 +19,7 @@
 #define BACK_LEFT_OUTPUT 5
 
 
-ros::NodeHandle nh;
+ros::NodeHandle_<ArduinoHardware, 2, 2, 1000, 1000> nh;
 
 //Define Variables we'll be connecting to
 double Input[4], Output[4], Setpoint[4];
@@ -31,7 +31,7 @@ PID frontLeftPID(&Input[1],&Output[1], &Setpoint[1], Kp, Ki, Kd, DIRECT);
 PID backRightPID(&Input[2], &Output[2], &Setpoint[2], Kp, Ki, Kd, DIRECT);
 PID backLeftPID(&Input[3],&Output[3], &Setpoint[3], Kp, Ki, Kd, DIRECT);
 
-
+float data[4];
 
 std_msgs::Float32MultiArray msg;
 
@@ -86,7 +86,6 @@ void setup()
   nh.advertise(pub);
   nh.subscribe(commands_sub);
   nh.subscribe(speeds_sub);
-  
 }
 
 void loop()
@@ -101,16 +100,16 @@ void loop()
   backRightPID.Compute();
   backLeftPID.Compute();
 
-  float data[4];
-
   for(int i = 0; i < 4; i++) {
     data[i] = Output[i];
     analogWrite(i+2, Output[i] / 4);
   }
 
   msg.data = data;
-  
+
   pub.publish(&msg);
+  Serial.flush();
+  
 }
 
 

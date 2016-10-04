@@ -1,5 +1,5 @@
-#include <ros.h>
-#include <sensor_msgs/JointState.h>
+//#include <ros.h>
+//#include <std_msgs/String.h>
 
 const byte pinAforEncoder[] = {2,4,6,8}; //Array of pins set up as A pin -> the interrupt pin
 const byte pinBforEncoder[] = {3,5,7,9}; //Array of pins set up as B pin
@@ -15,49 +15,54 @@ float wheelradi;
 float gearRatio;
 float pi;
 
-ros::NodeHandle_<ArduinoHardware, 2, 2, 1000, 1000> nh;
+ros::NodeHandle nh;
+std_msgs::String str_msg;
+ros::Publisher motorInfo("INFO:", &str_msg);
 
-sensor_msgs::JointState msg;
-
-ros::Publisher pub("motor_speeds", &msg);
 
 void setup()
-{
-  msg.velocity_length = 4;
-  
-  //Initialize ROS subscription
-  nh.initNode();
-  nh.advertise(pub);
-
-  //Encoderkode:
+{  
+  Serial.begin(57600);//Initialize the serial port
   EncoderInit();//Initialize the module
   ppr = 16; //DETTE ER FEIL MEST SANNSYNLIG!!!
   gearRatio = 0.667;
   wheelradi = (0.2032/2); //metres
   pi = 3.14159265;
-}
 
+  nh.initNode();
+  nh.advertise(motorInfo);
+}
+  
 void loop()
 {
-  nh.spinOnce();
-  
-  float data[4];
-
-  //start encoderkode:
   for (int i = 0; i<4;i++){
     rpm[i] = duration[i]*gearRatio/ppr;
     speeds[i] = 2*pi*wheelradi*rpm[i]/60; // m/s
+    //Serial.print(2*pi*wheelradi);
+    if (i == 0){
+      str_msg.data = "motor1 (pin 2 og 3)"; //motor1
+    }else if(i == 1){
+      str_msg.data = "motor2 (pin 4 og 5)"; //motor2
+    }else if(i == 2){
+      str_msg.data = "motor3 (pin 6 og 7)"; //motor3
+    }else if(i == 3){
+      str_msg.data = "motor4 (pin 8 og 9)"; //motor4
+    }else{
+      str_msg.data = "ERROR ERROR, BEEP BEEP!(feil i loop)";
+    }
+    str_msg.data += " RPM, ";
+    str_msg.data += rpm[i]; 
+    str_msg.data += " M/S";
+    str_msg.data += speeds[i];
+    str_msg.data += " ";
+    motorInfo.publish( &str_msg );
+    nh.spinOnce();
+    duration[i] = 0;
   }
 
-  //slutt encoderkode
-  
-  msg.velocity = rpm;
-  
-  pub.publish(&msg);
-  Serial.flush();
-  delay(10);
+  delay(500);
 }
-
+  
 void EncoderInit()
 {
   for (int i = 0; i<4;i++){
@@ -104,5 +109,4 @@ void wheelSpeed(int n){
   if(!Direction[n])  duration[n]++;
   else  duration[n]--;
 }
-
 
