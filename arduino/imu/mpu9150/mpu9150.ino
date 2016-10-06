@@ -192,6 +192,10 @@ void loop()
   Serial.println("dT cmps:      - gyro:         - accel: ");
   Serial.println("        x    y     z   x     y     z      x     y    z");
   delay(100);
+  // Publish the data on a ros topic
+  ros::init(argc, argv, "imu_data_publisher");
+  ros::nodehandle n;
+  ros::Publisher<std_msgs::Int32MultiArray> pub("imu_data", Int32MultiArray); //
 }
 
 //http://pansenti.wordpress.com/2013/03/26/pansentis-invensense-mpu-9150-software-for-arduino-is-now-on-github/
