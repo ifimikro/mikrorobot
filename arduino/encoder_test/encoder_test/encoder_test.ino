@@ -11,7 +11,6 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <sensor_msgs/JointState.h>
 
-
 #define PIN_INPUT 0
 #define FRONT_RIGHT_OUTPUT 2
 #define FRONT_LEFT_OUTPUT 3
@@ -25,7 +24,7 @@ ros::NodeHandle_<ArduinoHardware, 2, 2, 1000, 1000> nh;
 double Input[4], Output[4], Setpoint[4];
 
 //Specify the links and initial tuning parameters
-double Kp=2, Ki=5, Kd=1;
+double Kp=2.15, Ki=0.1, Kd=0;
 PID frontRightPID(&Input[0], &Output[0], &Setpoint[0], Kp, Ki, Kd, DIRECT);
 PID frontLeftPID(&Input[1],&Output[1], &Setpoint[1], Kp, Ki, Kd, DIRECT);
 PID backRightPID(&Input[2], &Output[2], &Setpoint[2], Kp, Ki, Kd, DIRECT);
@@ -60,15 +59,12 @@ void setup()
   //msg.layout.data_offset = 4;
   msg.data_length = 4;
   //initialize the variables we're linked to
-  Input[0] = 0;
-  Input[1] = 0;
-  Input[2] = 0;
-  Input[3] = 0;
-  
-  Setpoint[0] = 0;
-  Setpoint[1] = 0;
-  Setpoint[2] = 0;
-  Setpoint[3] = 0;
+  for(int i = 0; i < 4; i++) {
+    Input[i] = 0;
+    Output[i] = 0;
+    Setpoint[i] = 0;
+    data[i] = 0;
+  }
 
   pinMode(2, OUTPUT); 
   pinMode(3, OUTPUT); 
@@ -80,7 +76,18 @@ void setup()
   frontLeftPID.SetMode(AUTOMATIC);
   backRightPID.SetMode(AUTOMATIC);
   backLeftPID.SetMode(AUTOMATIC);
-  
+
+  frontRightPID.SetSampleTime(1);
+  frontLeftPID.SetSampleTime(1);
+  backRightPID.SetSampleTime(1);
+  backLeftPID.SetSampleTime(1);
+
+
+  frontRightPID.SetOutputLimits(-120,120);
+  frontLeftPID.SetOutputLimits(-120,120);
+  backRightPID.SetOutputLimits(-120,120);
+  backLeftPID.SetOutputLimits(-120,120);
+
   //Initialize ROS subscription
   nh.initNode();
   nh.advertise(pub);
@@ -100,16 +107,18 @@ void loop()
   backRightPID.Compute();
   backLeftPID.Compute();
 
+  //analogWrite(3,Output[1]);
+
   for(int i = 0; i < 4; i++) {
-    data[i] = Output[i];
-    analogWrite(i+2, Output[i] / 4);
+    data[i] = 2 * Setpoint[i] + Output[i];
+    analogWrite(i+2, data[i]);
+    digitalWrite(i+6,HIGH);
   }
 
   msg.data = data;
 
   pub.publish(&msg);
   Serial.flush();
-  
 }
 
 
