@@ -8,13 +8,6 @@
   <!-- Use this command to spawn the model in gazebo: rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot -->
   <!-- Use this command to generate the urdf (use two -'s in front of inorder): rosrun xacro xacro -inorder mikrorobot.xacro > mikrorobot.urdf -->
   <!-- Wheel offset height-direction -->
-  <!-- ros_control plugin -->
-  <gazebo>
-    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
-      <robotNamespace>/mikrorobot</robotNamespace>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
-  </gazebo>
   <!-- skid steering plugin -->
   <gazebo>
     <plugin filename="libgazebo_ros_skid_steer_drive.so" name="skid_steer_drive_controller">
@@ -27,9 +20,15 @@
       <wheelSeparation>0.4</wheelSeparation>
       <wheelDiameter>0.2</wheelDiameter>
       <robotBaseFrame>base_link</robotBaseFrame>
-      <torque>0.3</torque>
+      <torque>0.5</torque>
       <topicName>cmd_vel</topicName>
-      <broadcastTF>true</broadcastTF>
+      <broadcastTF>false</broadcastTF>
+      <odometryTopic>odom</odometryTopic>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryFrame>odom</odometryFrame>
+      <covariance_x>0.0001</covariance_x>
+      <covariance_y>0.0001</covariance_y>
+      <covariance_yaw>0.01</covariance_yaw>
     </plugin>
   </gazebo>
   <!-- lidar -->
@@ -43,12 +42,12 @@
           <horizontal>
             <samples>720</samples>
             <resolution>1</resolution>
-            <min_angle>-1.570796</min_angle>
-            <max_angle>1.570796</max_angle>
+            <min_angle>-3.14</min_angle>
+            <max_angle>3.14</max_angle>
           </horizontal>
         </scan>
         <range>
-          <min>0.10</min>
+          <min>0.25</min>
           <max>30.0</max>
           <resolution>0.01</resolution>
         </range>
@@ -101,6 +100,17 @@
       <bodyName>base_link</bodyName>
       <topicName>/mikrorobot/imu_data</topicName>
       <serviceName>/mikrorobot/imu_service</serviceName>
+      <gaussianNoise>0.01</gaussianNoise>
+    </plugin>
+  </gazebo>
+  <!-- Odometry -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="Odometry">
+      <frameName>map</frameName>
+      <bodyName>base_link</bodyName>
+      <topicName>/mikrorobot/odom</topicName>
+      <updateRate>30.0</updateRate>
+      <gaussianNoise>0.1</gaussianNoise>
     </plugin>
   </gazebo>
   <!-- camera -->
