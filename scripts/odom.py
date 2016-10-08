@@ -45,11 +45,15 @@ translation_matrix *= (R/4.0)
 ##   Message Callbacks
 def motor_speeds_cb(JointState):
   rospy.loginfo("odom: I got message on topic motor_speeds")
-  #rospy.loginfo("odom: motor_speeds Message contains: name = %s", JointState.name)
-  #rospy.loginfo("odom: motor_speeds Message contains: position = %f", JointState.position)
-  #rospy.loginfo("odom: motor_speeds Message contains: velocity = %f", JointState.velocity)
-  #rospy.loginfo("odom: motor_speeds Message contains: effort = %f", JointState.effort)
-  rpm = np.matrix.transpose(np.matrix(JointState.velocity))
+
+  w1 = JointState.velocity[1]
+  w2 = JointState.velocity[0]
+  w3 = JointState.velocity[3]
+  w4 = JointState.velocity[2]
+
+  # flipping the message from base_controller for doing the right calculations
+  rpm = [[w1], [w2], [w3], [w4]]
+
   vel = rpm * ((2*math.pi)/60)
   #vel /= k
   twist = translation_matrix * vel

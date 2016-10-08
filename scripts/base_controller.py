@@ -65,7 +65,9 @@ def cmd_vel_cb(Twist):
   #convert to rpm
   wheel_vel *= (60.0/(2*math.pi))
   # message to publish
-  JointState_obj1.velocity = wheel_vel
+  # flipping message to correspond to the motor script
+  message = [wheel_vel[1], wheel_vel[0], wheel_vel[3], wheel_vel[2]]
+  JointState_obj1.velocity = message
 
 ##############################################################
 ##  Service Callbacks
