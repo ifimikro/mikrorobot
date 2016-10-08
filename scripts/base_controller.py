@@ -30,15 +30,17 @@ import roslib; roslib.load_manifest('mikrorobot')
 
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
+import tf
 import numpy as np
+import math
 
-
-# avstander fra robotens senter
-L1 = 1.0
-L2 = 1.0
+# 16/24 tenner
+# avstander fra robotens sentrum
+# bredde og lengde stemmer ikke helt
+L1 = 0.198 # bredde
+L2 = 0.184 # lengde
 L = L1+L2
-k = 1.0 # utvekslingskonstant
-R = 2.0 # hjulradius
+R = 0.1 # hjulradius
 translation_matrix = np.matrix([[1.0, 1.0, -L], [1.0, -1.0, L], [1.0, -1.0, -L], [1.0, 1.0, L]])
 translation_matrix *= 1.0/R
 
@@ -47,15 +49,23 @@ translation_matrix *= 1.0/R
 ##   Message Callbacks
 def cmd_vel_cb(Twist):
   rospy.loginfo("base_controller: I got message on topic cmd_vel")
-  rospy.loginfo("base_controller: cmd_vel Message contains: linear = %", Twist.linear)
-  rospy.loginfo("base_controller: cmd_vel Message contains: angular = %", Twist.angular)
-  target = np.matrix([[Twist.linear.x], [Twist.linear.y], [Twist.angular.z]])
+  #rospy.loginfo("base_controller: cmd_vel Message contains: linear = %d", Twist.linear)
+  #rospy.loginfo("base_controller: cmd_vel Message contains: angular = %d", Twist.angular)
 
-  wheel_vel = translation_matrix * target
-  enginge_vel = wheel_vel / k
+  #tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.get_time())
+  x = Twist.linear.x if Twist.linear.x < 0.3 else 0.3
+  y = Twist.linear.y if Twist.linear.y < 0.3 else 0.3
+  z = Twist.angular.z if Twist.angular.z < 0.3 else 0.3
+  print x, y, z
 
+  target = np.matrix([[x], [y], [z]])
+
+  wheel_vel = translation_matrix * target # rad/s
+
+  #convert to rpm
+  wheel_vel *= (60.0/(2*math.pi))
   # message to publish
-  JointState_obj1.velocity = enginge_vel
+  JointState_obj1.velocity = wheel_vel
 
 ##############################################################
 ##  Service Callbacks
@@ -69,6 +79,8 @@ if __name__ == '__main__':
 # get the node started first so that logging works from the get-go
   rospy.init_node("base_controller")
   rospy.loginfo("Started template python node: base_controller.")
+  #tf_listener = tf.TransformListener()
+  #print tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.Time.now())
 ##############################################################
 ##  Service Advertisers
 
@@ -92,9 +104,9 @@ if __name__ == '__main__':
   JointState_obj1 = JointState()
 
   JointState_obj1.name = "Motor velocity commands"
-  JointState_obj1.position = 0
-  JointState_obj1.velocity = 0
-  JointState_obj1.effort = 0
+  JointState_obj1.position = []
+  JointState_obj1.velocity = []
+  JointState_obj1.effort = []
 
 ############# Service Object for client ####################
 

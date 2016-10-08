@@ -31,10 +31,11 @@ import roslib; roslib.load_manifest('mikrorobot')
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
 import numpy as np
+import math
 
-R = 1.0
-L1 = 1.0
-L2 = 1.0
+R = 0.1
+L1 = 0.15
+L2 = 0.25
 L = 1.0/(L1+L2)
 translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-L, L, -L, L]])
 translation_matrix *= (R/4.0)
@@ -44,15 +45,17 @@ translation_matrix *= (R/4.0)
 ##   Message Callbacks
 def motor_speeds_cb(JointState):
   rospy.loginfo("odom: I got message on topic motor_speeds")
-  rospy.loginfo("odom: motor_speeds Message contains: name = %s", JointState.name)
-  rospy.loginfo("odom: motor_speeds Message contains: position = %f", JointState.position)
-  rospy.loginfo("odom: motor_speeds Message contains: velocity = %f", JointState.velocity)
-  rospy.loginfo("odom: motor_speeds Message contains: effort = %f", JointState.effort)
-
-  twist = translation_matrix * np.transpose(JointState.velocity)
-  Twist_obj1.linear.x = twist(0)
-  Twist_obj1.linear.y = twist(1)
-  Twist_obj1.angular.z = twist(2)
+  #rospy.loginfo("odom: motor_speeds Message contains: name = %s", JointState.name)
+  #rospy.loginfo("odom: motor_speeds Message contains: position = %f", JointState.position)
+  #rospy.loginfo("odom: motor_speeds Message contains: velocity = %f", JointState.velocity)
+  #rospy.loginfo("odom: motor_speeds Message contains: effort = %f", JointState.effort)
+  rpm = np.matrix.transpose(np.matrix(JointState.velocity))
+  vel = rpm * ((2*math.pi)/60)
+  #vel /= k
+  twist = translation_matrix * vel
+  Twist_obj1.linear.x = twist[0]
+  Twist_obj1.linear.y = twist[1]
+  Twist_obj1.angular.z = twist[2]
 ##############################################################
 ##  Service Callbacks
 
@@ -71,12 +74,12 @@ if __name__ == '__main__':
 
 ##############################################################
 ##  Message Subscribers
-  JointState_sub1 = rospy.Subscriber("motor_speeds", JointState, motor_speeds_cb)
+  JointState_sub1 = rospy.Subscriber("motor_cmds", JointState, motor_speeds_cb)
 
 
 ##############################################################
 ##  Message Publishers
-  Twist_pub1  = rospy.Publisher("odom",Twist, queue_size=1000)
+  Twist_pub1  = rospy.Publisher("odom", Twist, queue_size=1000)
 
 
 ##############################################################
@@ -87,8 +90,8 @@ if __name__ == '__main__':
 ############# Message Object for Publisher ####################
   Twist_obj1 = Twist()
 
-  Twist_obj1.linear = 0
-  Twist_obj1.angular = 0
+  #Twist_obj1.linear =
+  #Twist_obj1.angular =
 
 ############# Service Object for client ####################
 
