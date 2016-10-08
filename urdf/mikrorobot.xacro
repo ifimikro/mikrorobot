@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <!-- Mikrorobot Mark I -->
 <robot name="mikrorobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  
+
   <!-- Use this command to spawn the model in gazebo: rosrun gazebo_ros spawn_model -file `rospack find mikrorobot`/urdf/mikrorobot.urdf -urdf -z 1 -model mikrorobot -->
 
   <!-- Use this command to generate the urdf (use two -'s in front of inorder): rosrun xacro xacro -inorder mikrorobot.xacro > mikrorobot.urdf -->
-  
+
   <!-- Constants for robot dimensions -->
   <xacro:property name="PI" value="3.1415926535897931"/>
   <xacro:property name="mass" value="10" /> <!-- arbitrary value for mass -->
   <xacro:property name="width" value="0.3" />
-  <xacro:property name="depth" value="0.5" /> 
-  <xacro:property name="height" value="0.17" />
+  <xacro:property name="depth" value="0.5" />
+  <xacro:property name="height" value="0.27" />
   <xacro:property name="wheel_mass" value="1.5" />
   <xacro:property name="wheel_radius" value="0.1" />
-  <xacro:property name="wheel_width" value="0.07" />
+  <xacro:property name="wheel_width" value="0.05" />
   <xacro:property name="camera_link" value="0.05" /> <!-- Size of square 'camera' box -->
-  <xacro:property name="wheel_offset_x" value="0.2" /> <!-- Wheel offset depth-direction -->
-  <xacro:property name="wheel_offset_y" value="0.2" /> <!-- Wheel offset width-direction -->
-  <xacro:property name="wheel_offset_z" value="${-height/2 + 0.05}" /> <!-- Wheel offset height-direction -->
+  <xacro:property name="wheel_offset_x" value="0.184" /> <!-- Wheel offset depth-direction -->
+  <xacro:property name="wheel_offset_y" value="0.198" /> <!-- Wheel offset width-direction -->
+  <xacro:property name="wheel_offset_z" value="${-height/2 + 0.04}" /> <!-- Wheel offset height-direction -->
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find mikrorobot)/urdf/mikrorobot.gazebo" />
@@ -56,10 +56,10 @@
   <joint name="front_right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="front_right_wheel"/>
-    <origin xyz="${wheel_offset_x} ${-wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" /> 
+    <origin xyz="${wheel_offset_x} ${-wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
     <axis xyz="0 1 0" rpy="0 0 0" />
-  </joint>  
-  
+  </joint>
+
   <link name="front_right_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
@@ -87,17 +87,17 @@
                iyy="${wheel_mass / 12.0*3* (wheel_radius * wheel_radius + wheel_width * wheel_width)}"
                iyz="0"
                izz="${wheel_mass * wheel_radius * wheel_radius / 2.0}" />
-    </inertial>    
+    </inertial>
   </link>
 
   <!-- Back Right Wheel -->
   <joint name="back_right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="back_right_wheel"/>
-    <origin xyz="${-wheel_offset_x} ${-wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" /> 
+    <origin xyz="${-wheel_offset_x} ${-wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
     <axis xyz="0 1 0" rpy="0 0 0" />
-  </joint>  
-  
+  </joint>
+
   <link name="back_right_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
@@ -113,7 +113,7 @@
           <cylinder length="${wheel_width}" radius="${wheel_radius}" />
       </geometry>
     </collision>
-    
+
     <inertial>
       <mass value="${wheel_mass}" />
       <origin xyz="0 0 ${wheel_width/2}" rpy="0 0 0"/>
@@ -123,17 +123,17 @@
                iyy="${wheel_mass / 12.0*3* (wheel_radius * wheel_radius + wheel_width * wheel_width)}"
                iyz="0"
                izz="${wheel_mass * wheel_radius * wheel_radius / 2.0}" />
-    </inertial>  
+    </inertial>
   </link>
-  
+
   <!-- Front Left Wheel -->
   <joint name="front_left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="front_left_wheel"/>
-    <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" /> 
+    <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
     <axis xyz="0 1 0" rpy="0 0 0" />
-  </joint>  
-  
+  </joint>
+
   <link name="front_left_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
@@ -149,7 +149,7 @@
           <cylinder length="${wheel_width}" radius="${wheel_radius}" />
       </geometry>
     </collision>
-    
+
     <inertial>
       <mass value="${wheel_mass}" />
       <origin xyz="0 0 ${wheel_width/2}" rpy="0 0 0"/>
@@ -159,17 +159,17 @@
                iyy="${wheel_mass / 12.0*3* (wheel_radius * wheel_radius + wheel_width * wheel_width)}"
                iyz="0"
                izz="${wheel_mass * wheel_radius * wheel_radius / 2.0}" />
-    </inertial>  
+    </inertial>
   </link>
 
     <!-- Back Left Wheel -->
   <joint name="back_left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="back_left_wheel"/>
-     <origin xyz="${-wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" /> 
+     <origin xyz="${-wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
     <axis xyz="0 1 0" rpy="0 0 0" />
-  </joint>  
-  
+  </joint>
+
   <link name="back_left_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="1.570795 0 0" />
@@ -195,19 +195,19 @@
                iyy="${wheel_mass / 12.0*3* (wheel_radius * wheel_radius + wheel_width * wheel_width)}"
                iyz="0"
                izz="${wheel_mass * wheel_radius * wheel_radius / 2.0}" />
-    </inertial>  
+    </inertial>
   </link>
 
     <!-- Camera -->
   <link name="camera_link">
-    
+
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
 	<cylinder length="0.03" radius ="0.02"/>
       </geometry>
     </collision>
-    
+
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
@@ -215,31 +215,31 @@
       </geometry>
       <material name="black"/>
     </visual>
-    
+
     <inertial>
       <mass value="1e-5" />
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
-  
+
   <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_link"/>
-    <origin xyz="${depth/2 - 0.03} 0 ${height/2 + 0.02}" rpy="0 0 0" /> 
+    <origin xyz="${depth/2 - 0.03} 0 ${height/2 + 0.02}" rpy="0 0 0" />
     <axis xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
       <!-- Laser -->
   <link name="laser_link">
-    
+
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
 	<cylinder length="0.03" radius ="0.02"/>
       </geometry>
     </collision>
-    
+
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
@@ -247,18 +247,18 @@
       </geometry>
       <material name="black"/>
     </visual>
-    
+
     <inertial>
       <mass value="1e-5" />
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
-  
+
   <joint name="laser_joint" type="fixed">
     <parent link="base_link"/>
     <child link="laser_link"/>
-    <origin xyz="0 0 ${height/2 + 0.02}" rpy="0 0 0" /> 
+    <origin xyz="0 0 ${height/2 + 0.02}" rpy="0 0 0" />
     <axis xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
@@ -307,5 +307,5 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  
+
 </robot>
