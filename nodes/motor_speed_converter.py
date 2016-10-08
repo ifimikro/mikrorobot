@@ -16,7 +16,7 @@ class PublisherAndSubscriber:
     
     
     def fixMessage(self,motor_cmds):
-        self.js.name = ["front_right_wheel_joint", "back_right_wheel_joint", "front_left_wheel_joint", "back_left_wheel_joint"]
+        self.js.name = ["front_right_wheel_joint", "front_left__wheel_joint", "back_right_wheel_joint", "back_left_wheel_joint"]
         self.js.velocity = motor_cmds.velocity
         self.js.header.stamp = rospy.Time.now()
         self.pub.publish(self.js)

@@ -17,11 +17,16 @@
 #define BACK_RIGHT_OUTPUT 4
 #define BACK_LEFT_OUTPUT 5
 
+//Noen av motorene går motsatt vei, så noen av verdiene må flippes
+int flippedDirections[4] = { -1, 1, -1, 1 };
+
+
 
 ros::NodeHandle_<ArduinoHardware, 2, 2, 1000, 1000> nh;
 
 //Define Variables we'll be connecting to
 double Input[4], Output[4], Setpoint[4];
+int directions[4];
 
 //Specify the links and initial tuning parameters
 double Kp=2.15, Ki=0.1, Kd=0;
@@ -37,21 +42,29 @@ std_msgs::Float32MultiArray msg;
 ros::Publisher pub("pid_outputs", &msg);
 
 //Callback function on new setpoint from ROS
-void motor_cb( const std_msgs::Float32MultiArray& motor_cmds){
-  Setpoint[0] = motor_cmds.data[0];
-  Setpoint[1] = motor_cmds.data[1];
-  Setpoint[2] = motor_cmds.data[2];
-  Setpoint[3] = motor_cmds.data[3];
-}
-//Callback function on new motor speeds from ROS
-void motor_speed( const sensor_msgs::JointState& motor_speeds){
-  Input[0] = motor_speeds.velocity[0];
-  Input[1] = motor_speeds.velocity[1];
-  Input[2] = motor_speeds.velocity[2];
-  Input[3] = motor_speeds.velocity[3];
+void motor_cb( const sensor_msgs::JointState& motor_cmds){
+  for (int i = 0; i < 4; i++) {
+    if (motor_cmds.velocity[i]*flippedDirections[i] >= 0) {
+      directions[i] = 1;
+    } else {
+      directions[i] = 0;
+    }
+    Setpoint[i] = abs(motor_cmds.velocity[i]);
+  }
 }
 
-ros::Subscriber<std_msgs::Float32MultiArray> commands_sub("motor_cmds", motor_cb);
+//Callback function on new motor speeds from ROS
+void motor_speed( const sensor_msgs::JointState& motor_speeds){
+  for (int i = 0; i < 4; i++) {
+    if((motor_speeds.velocity[i]*flippedDirections[i] >= 0 and directions[i] == 1) or (motor_speeds.velocity[i]*flippedDirections[i] < 0 and directions[i] == 0)) {
+      Input[i] = abs(motor_speeds.velocity[i]);
+    } else {
+      Input[i] = -abs(motor_speeds.velocity[i]);
+    }
+  }
+}
+
+ros::Subscriber<sensor_msgs::JointState> commands_sub("motor_cmds", motor_cb);
 ros::Subscriber<sensor_msgs::JointState> speeds_sub("motor_speeds", motor_speed);
 
 void setup()
@@ -64,12 +77,17 @@ void setup()
     Output[i] = 0;
     Setpoint[i] = 0;
     data[i] = 0;
+    directions[i] = 1;
   }
 
   pinMode(2, OUTPUT); 
   pinMode(3, OUTPUT); 
   pinMode(4, OUTPUT); 
-  pinMode(5, OUTPUT); 
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT); 
+  pinMode(7, OUTPUT); 
+  pinMode(8, OUTPUT); 
+  pinMode(9, OUTPUT); 
 
   //turn the PID on
   frontRightPID.SetMode(AUTOMATIC);
@@ -97,7 +115,6 @@ void setup()
 
 void loop()
 {
-
   //Update setpoint and speeds
   nh.spinOnce();
   
@@ -112,7 +129,7 @@ void loop()
   for(int i = 0; i < 4; i++) {
     data[i] = 2 * Setpoint[i] + Output[i];
     analogWrite(i+2, data[i]);
-    digitalWrite(i+6,HIGH);
+    digitalWrite(i+6, directions[i]);
   }
 
   msg.data = data;
@@ -120,7 +137,6 @@ void loop()
   pub.publish(&msg);
   Serial.flush();
 }
-
 
 
 
