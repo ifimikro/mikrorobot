@@ -34,8 +34,8 @@ import numpy as np
 import math
 
 R = 0.1
-L1 = 0.15
-L2 = 0.25
+L1 = 0.198 # bredde
+L2 = 0.184 # lengde
 L = 1.0/(L1+L2)
 translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-L, L, -L, L]])
 translation_matrix *= (R/4.0)
