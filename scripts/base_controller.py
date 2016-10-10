@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
 
     rospy.loginfo("base_controller: main loop")
-    rospy.sleep(2)
+    rospy.sleep(0.1)
 ###############################################################
 #
 # end of main wile loop
