@@ -44,7 +44,7 @@ translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-
 translation_matrix *= (R/4.0)
 
 # covariance matrix
-variance_vector = [0.01, 0.01, 0.01, 0.0, 0.0, 0.01]
+variance_vector = [0.01, 0.0, 0.01, 0.0, 0.0, 0.01]
 mat = [[x*y for x in variance_vector] for y in variance_vector]
 cov = np.ravel(mat)
 
