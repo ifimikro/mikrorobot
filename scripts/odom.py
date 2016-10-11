@@ -44,8 +44,10 @@ translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-
 translation_matrix *= (R/4.0)
 
 # covariance matrix
-cov = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+variance_vector = [0.01, 0.01, 0.01, 0.0, 0.0, 0.01]
+mat = [[x*y for x in variance_vector] for y in variance_vector]
+cov = np.ravel(mat)
+
 # times for calculating position
 last_time = 0.0
 current_time = 0.0
@@ -79,6 +81,7 @@ def motor_speeds_cb(JointState):
   delta_y = twist[1] * delta_time
   delta_z = twist[2] * delta_time * (180/math.pi)
 
+
   # position over time
   x += (delta_x * np.cos(delta_z))
   y += (delta_y * np.sin(delta_z))
@@ -86,14 +89,16 @@ def motor_speeds_cb(JointState):
   # create quaternion for odom pose orientation
   quat = tf.transformations.quaternion_from_euler(0.0, 0.0, z)
 
+  Odom_obj1.child_frame_id = "base_link"
   Odom_obj1.twist.twist.linear.x = twist[0]
   Odom_obj1.twist.twist.linear.y = twist[1]
   Odom_obj1.twist.twist.angular.z = twist[2]
+  Odom_obj1.twist.covariance = cov
   Odom_obj1.pose.pose.position.x = x
   Odom_obj1.pose.pose.position.y = y
   Odom_obj1.pose.pose.position.z = 0.0
   Odom_obj1.pose.pose.orientation = Quaternion(*quat)
-  #Odom_obj1.pose.covariance = cov
+  Odom_obj1.pose.covariance = cov
   last_time = current_time
 ##############################################################
 ##  Service Callbacks
