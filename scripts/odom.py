@@ -30,6 +30,7 @@ import roslib; roslib.load_manifest('mikrorobot')
 
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Quaternion
 from nav_msgs.msg import Odometry
 import numpy as np
 import math
@@ -42,6 +43,9 @@ L = 1.0/(L1+L2)
 translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-L, L, -L, L]])
 translation_matrix *= (R/4.0)
 
+# covariance matrix
+cov = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
 # times for calculating position
 last_time = 0.0
 current_time = 0.0
@@ -55,7 +59,7 @@ z = 0.0
 ##   Message Callbacks
 def motor_speeds_cb(JointState):
   rospy.loginfo("odom: I got message on topic motor_speeds")
-  current_time = rospy.Time.now()
+  current_time = rospy.get_time()
   global z, x, y, last_time
 
   w1 = JointState.velocity[1]
@@ -63,38 +67,33 @@ def motor_speeds_cb(JointState):
   w3 = JointState.velocity[3]
   w4 = JointState.velocity[2]
 
-  # flipping the message from base_controller for doing the right calculations
+  # flipping the message from motor_speeds_with_names for doing the right calculations
   rpm = [[w1], [w2], [w3], [w4]]
-  vel = [[x * ((2*math.pi)/60) for x in y] for y in rpm]
+  vel = [[a * ((2*math.pi)/60) for a in b] for b in rpm]
   #vel /= k
   twist = translation_matrix * vel
 
   delta_time = current_time - last_time
   # meters
-  delta_x = twist[0] * delta_time.secs
-  delta_y = twist[1] * delta_time.secs
-  delta_z = twist[2] * delta_time.secs * (180/math.pi)
+  delta_x = twist[0] * delta_time
+  delta_y = twist[1] * delta_time
+  delta_z = twist[2] * delta_time * (180/math.pi)
 
   # position over time
-  x += delta_x * np.cos(delta_z)
-  y += delta_y * np.sin(delta_z)
+  x += (delta_x * np.cos(delta_z))
+  y += (delta_y * np.sin(delta_z))
   z += delta_z
-
   # create quaternion for odom pose orientation
   quat = tf.transformations.quaternion_from_euler(0.0, 0.0, z)
 
-  #Odom_obj1.pose = [x, y, 0.0, 0.0, 0.0, z]
-  #Odom_obj1.twist = [twist[0], twist[1], 0.0, 0.0, 0.0, twist[2]]
   Odom_obj1.twist.twist.linear.x = twist[0]
   Odom_obj1.twist.twist.linear.y = twist[1]
   Odom_obj1.twist.twist.angular.z = twist[2]
   Odom_obj1.pose.pose.position.x = x
   Odom_obj1.pose.pose.position.y = y
   Odom_obj1.pose.pose.position.z = 0.0
-  Odom_obj1.pose.pose.orientation.x = quat[0]
-  Odom_obj1.pose.pose.orientation.y = quat[1]
-  Odom_obj1.pose.pose.orientation.z = quat[2]
-  Odom_obj1.pose.pose.orientation.w = quat[3]
+  Odom_obj1.pose.pose.orientation = Quaternion(*quat)
+  #Odom_obj1.pose.covariance = cov
   last_time = current_time
 ##############################################################
 ##  Service Callbacks
@@ -115,8 +114,8 @@ if __name__ == '__main__':
 ##############################################################
 ##  Message Subscribers
   JointState_sub1 = rospy.Subscriber("motor_cmds", JointState, motor_speeds_cb)
-  current_time = rospy.Time.now()
-  last_time = rospy.Time.now()
+  current_time = rospy.get_time()
+  last_time = rospy.get_time()
 
 
 ##############################################################
