@@ -86,6 +86,8 @@ def motor_speeds_cb(JointState):
   # create quaternion for odom pose orientation
   quat = tf.transformations.quaternion_from_euler(0.0, 0.0, z)
 
+  Odom_obj1.header.frame_id = "odom"
+  Odom_obj1.child_frame_id = "base_link"
   Odom_obj1.twist.twist.linear.x = twist[0]
   Odom_obj1.twist.twist.linear.y = twist[1]
   Odom_obj1.twist.twist.angular.z = twist[2]
@@ -113,7 +115,7 @@ if __name__ == '__main__':
 
 ##############################################################
 ##  Message Subscribers
-  JointState_sub1 = rospy.Subscriber("motor_speeds_with_names", JointState, motor_speeds_cb)
+  JointState_sub1 = rospy.Subscriber("motor_speed_with_names", JointState, motor_speeds_cb)
   current_time = rospy.get_time()
   last_time = rospy.get_time()
 
