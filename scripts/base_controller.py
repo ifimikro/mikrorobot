@@ -105,7 +105,7 @@ if __name__ == '__main__':
 ############# Message Object for Publisher ####################
   JointState_obj1 = JointState()
 
-  JointState_obj1.name = "Motor velocity commands"
+  #JointState_obj1.name = "Motor velocity commands"
   JointState_obj1.position = []
   JointState_obj1.velocity = []
   JointState_obj1.effort = []
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
 
     rospy.loginfo("base_controller: main loop")
-    rospy.sleep(2)
+    rospy.sleep(0.1)
 ###############################################################
 #
 # end of main wile loop

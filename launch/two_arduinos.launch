@@ -1,5 +1,9 @@
 <launch>
-<node name="arduino_due" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0" output="screen" />
-<node name="arduino_101" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM1" output="screen" />
-<node name="motor_speed_converter" pkg="mikrorobot" type="motor_speed_converter.py" output="screen" />
+        <node name="arduino_due" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0" output="screen" />
+        <node name="arduino_101" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM1" output="screen" />
+        <node name="motor_speed_converter" pkg="mikrorobot" type="motor_speed_converter.py" output="screen" />
+
+        <!-- node for å hente bilder fra webkameraet -->
+        <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" />
+
 </launch>
