@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
 ##############################################################
 ##  Message Subscribers
-  JointState_sub1 = rospy.Subscriber("motor_cmds", JointState, motor_speeds_cb)
+  JointState_sub1 = rospy.Subscriber("motor_speeds_with_names", JointState, motor_speeds_cb)
   current_time = rospy.get_time()
   last_time = rospy.get_time()
 
