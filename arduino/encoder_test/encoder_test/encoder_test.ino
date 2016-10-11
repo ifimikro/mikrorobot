@@ -29,7 +29,7 @@ double Input[4], Output[4], Setpoint[4];
 int directions[4];
 
 //Specify the links and initial tuning parameters
-double Kp=2.15, Ki=0.1, Kd=0;
+double Kp=2.15, Ki=0, Kd=0;
 PID frontRightPID(&Input[0], &Output[0], &Setpoint[0], Kp, Ki, Kd, DIRECT);
 PID frontLeftPID(&Input[1],&Output[1], &Setpoint[1], Kp, Ki, Kd, DIRECT);
 PID backRightPID(&Input[2], &Output[2], &Setpoint[2], Kp, Ki, Kd, DIRECT);

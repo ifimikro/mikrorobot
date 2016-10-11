@@ -1,0 +1,25 @@
+<launch>
+
+  <!-- Disse første pakkene kjøres på den maskinen du launcher denne filen i -->
+
+  <!-- node som henter komprimerte bilder fra roboten og publiserer dem som ukomprimerte bilder -->
+  <node name="republish" ns="mikrorobot" type="republish" pkg="image_transport" args="compressed in:=usb_cam/image_raw raw out:=/camera/image_raw" />
+
+  <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
+  
+  <machine name="mikro" address="192.168.38.100" env-loader="/opt/ros/kinetic/env.sh" user="mikro" password="mikro" default="false"/>
+  <!-- KONFIGURER ENV.SH PÅ RASPBERRY PIEN-->
+  
+  <!-- node for å hente bilder fra webkameraet -->
+  <node name="usb_cam" ns="mikrorobot" machine="mikro" pkg="usb_cam" type="usb_cam_node" />
+
+  <!-- node for å kommunisere med arduinoen -->
+  <node name="rosserial_python" ns="mikrorobot" machine="mikro" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0"/>
+  <node name="rosserial_python2" ns="mikrorobot" machine="mikro" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM1"/>
+
+  <node name="motor_speed_converter" ns="mikrorobot" machine="mikro" pkg="mikrorobot" type="motor_speed_converter.py" />
+
+  <node name="lidar_node" ns="mikrorobot" machine="mikro" pkg="rplidar_ros" type="rplidarNode" />
+  <node name="base_controller" ns="mikrorobot" machine="mikro" pkg="mikrorobot" type="base_controller.py"/>
+  
+</launch>
