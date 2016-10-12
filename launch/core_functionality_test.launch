@@ -1,0 +1,18 @@
+<launch>
+
+  <!-- Load robot description -->
+  <param name="robot_description"  command="cat $(find mikrorobot)/urdf/mikrorobot.urdf" />
+
+    <!-- state publisher is absolutely necessary -->
+  <node name="robot_state_publisher" ns="mikrorobot" pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="/joint_states" to="/mikrorobot/joint_states" />
+  </node>
+
+    <node name="odom" ns="mikrorobot" pkg="mikrorobot" type="odom.py"/>
+
+    <!-- node for mapping fra lidardata -->
+  <node name="slam_gmapping" ns="mikrorobot" pkg="gmapping" type="slam_gmapping">
+        <param name="map_update_interval" value="0.1"/>
+  </node>
+
+</launch>

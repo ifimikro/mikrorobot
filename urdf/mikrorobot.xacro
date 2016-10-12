@@ -231,7 +231,7 @@
   </joint>
 
       <!-- Laser -->
-  <link name="laser_link">
+  <link name="laser_frame">
 
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -257,8 +257,8 @@
 
   <joint name="laser_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="laser_link"/>
-    <origin xyz="0 0 ${height/2 + 0.02}" rpy="0 0 0" />
+    <child link="laser_frame"/>
+    <origin xyz="${depth/2 - 0.05} 0 ${height/2 + 0.12}" rpy="0 0 ${PI}" />
     <axis xyz="0 0 0" rpy="0 0 0" />
   </joint>
 

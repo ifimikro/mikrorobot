@@ -63,22 +63,18 @@ void setup()
   
   // start serial port at 9600 bps:
   Serial1.begin(9600);
-  while (!Serial1) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
+
   Serial2.begin(9600);
-  while (!Serial2) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
+  
 }
 
 void loop()
 {
   //Update setpoint
   nh.spinOnce();
-  
+  delay(1);
   //Get current speed
-  if (Serial1.available() > 0) {
+ if (Serial1.available() > 0) {
     // get incoming byte:
     Input[0] = Serial1.read();
     Input[2] = Serial1.read();
@@ -99,7 +95,7 @@ void loop()
   analogWrite(FRONT_RIGHT_OUTPUT, Output[0]);
   analogWrite(FRONT_LEFT_OUTPUT, Output[1]);
   analogWrite(BACK_RIGHT_OUTPUT, Output[2]);
-  analogWrite(BACK_LEFT_OUTPUT, Output[3]);
+  analogWrite(BACK_LEFT_OUTPUT, Output[3]); 
 }
 
 
