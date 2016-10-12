@@ -82,6 +82,7 @@ def get_covariance(actual):
         for j in range(0, 5):
             print (tmp2[i]*tmp2[j])/2
             cov.append(((actual[i]*actual[j])/2- (tmp2[i]*tmp2[j]))/5)
+    mean_vector = tmp2
     return cov
     
 ##############################################################
