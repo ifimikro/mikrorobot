@@ -30,7 +30,7 @@ import roslib; roslib.load_manifest('mikrorobot')
 
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Quaternion
+#from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import numpy as np
@@ -59,6 +59,20 @@ y = 0.0
 th = 0.0
 
 broadcaster = tf.TransformBroadcaster()
+
+def euler_to_quaternion(pitch, roll, yaw):
+    t0 = np.cos(yaw/2.0)
+    t1 = np.sin(yaw/2.0)
+    t2 = np.cos(roll/2.0)
+    t3 = np.sin(roll/2.0)
+    t4 = np.cos(pitch/2.0)
+    t5 = np.sin(pitch/2.0)
+
+    w = t0*t2*t4 + t1*t3*t5
+    x = t0*t3*t4 - t1*t2*t5
+    y = t0*t2*t5 + t1*t3*t4
+    z = t1*t2*t4 - t3*t5*t0
+    return [w, x, y, z]
 
 ##############################################################
 ##   Message Callbacks
@@ -89,7 +103,8 @@ def motor_speeds_cb(JointState):
   y += (delta_y * np.cos(delta_th) + delta_x * np.sin(delta_th))
   th += delta_th
   # create quaternion for odom pose orientation
-  quat = tf.transformations.quaternion_from_euler(th, 0.0, 0.0)
+  quat = tf.transformations.quaternion_from_euler(0.0, 0.0, th)
+
 
   Odom_obj1.header.stamp = rospy.Time.now()
   Odom_obj1.header.frame_id = "odom"
@@ -100,7 +115,7 @@ def motor_speeds_cb(JointState):
   Odom_obj1.twist.covariance = cov
   Odom_obj1.pose.pose.position.x = x
   Odom_obj1.pose.pose.position.y = y
-  Odom_obj1.pose.pose.position.z = delta_th
+  Odom_obj1.pose.pose.position.z = 0.0
   Odom_obj1.pose.pose.orientation.x = quat[0]
   Odom_obj1.pose.pose.orientation.y = quat[1]
   Odom_obj1.pose.pose.orientation.z = quat[2]
@@ -114,7 +129,7 @@ def motor_speeds_cb(JointState):
                    "base_link",
                    "odom")
 
-  
+
 ##############################################################
 ##  Service Callbacks
 
