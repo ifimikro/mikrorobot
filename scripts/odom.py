@@ -79,7 +79,7 @@ def motor_speeds_cb(JointState):
   # meters
   delta_x = twist[0] * delta_time
   delta_y = twist[1] * delta_time
-  delta_z = twist[2] * delta_time * (180/math.pi)
+  delta_z = twist[2] * delta_time
 
 
   # position over time
