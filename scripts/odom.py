@@ -30,7 +30,7 @@ import roslib; roslib.load_manifest('mikrorobot')
 
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Quaternion
+#from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import numpy as np
@@ -59,6 +59,20 @@ y = 0.0
 th = 0.0
 
 broadcaster = tf.TransformBroadcaster()
+
+def euler_to_quaternion(pitch, roll, yaw):
+    t0 = np.cos(yaw/2.0)
+    t1 = np.sin(yaw/2.0)
+    t2 = np.cos(roll/2.0)
+    t3 = np.sin(roll/2.0)
+    t4 = np.cos(pitch/2.0)
+    t5 = np.sin(pitch/2.0)
+
+    w = t0*t2*t4 + t1*t3*t5
+    x = t0*t3*t4 - t1*t2*t5
+    y = t0*t2*t5 + t1*t3*t4
+    z = t1*t2*t4 - t3*t5*t0
+    return [w, x, y, z]
 
 ##############################################################
 ##   Message Callbacks
