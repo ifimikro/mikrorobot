@@ -89,7 +89,7 @@ def motor_speeds_cb(JointState):
   y += (delta_y * np.cos(delta_th) + delta_x * np.sin(delta_th))
   th += delta_th
   # create quaternion for odom pose orientation
-  quat = tf.transformations.quaternion_from_euler(th, 0.0, 0.0)
+  quat = tf.transformations.quaternion_from_euler(0.0, 0.0, th,'sxyz')
 
   Odom_obj1.header.stamp = rospy.Time.now()
   Odom_obj1.header.frame_id = "odom"
@@ -100,7 +100,7 @@ def motor_speeds_cb(JointState):
   Odom_obj1.twist.covariance = cov
   Odom_obj1.pose.pose.position.x = x
   Odom_obj1.pose.pose.position.y = y
-  Odom_obj1.pose.pose.position.z = delta_th
+  Odom_obj1.pose.pose.position.z = th
   Odom_obj1.pose.pose.orientation.x = quat[0]
   Odom_obj1.pose.pose.orientation.y = quat[1]
   Odom_obj1.pose.pose.orientation.z = quat[2]
@@ -109,10 +109,10 @@ def motor_speeds_cb(JointState):
   last_time = current_time
 
   broadcaster.sendTransform((x, y, 0),
-                   quat,
-                   rospy.Time.now(),
-                   "base_link",
-                   "odom")
+                            quat,
+                            rospy.Time.now(),
+                            "base_link",
+                            "odom")
 
   
 ##############################################################
