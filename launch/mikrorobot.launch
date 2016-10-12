@@ -19,7 +19,9 @@
 
   <node name="motor_speed_converter" ns="mikrorobot" machine="mikro" pkg="mikrorobot" type="motor_speed_converter.py" />
 
-  <node name="lidar_node" ns="mikrorobot" machine="mikro" pkg="rplidar_ros" type="rplidarNode" />
+  <node name="lidar_node" ns="mikrorobot" machine="mikro" pkg="rplidar_ros" type="rplidarNode">
+     <param name="throttle_scans" value="5"/>
+  </node>
   <node name="base_controller" ns="mikrorobot" machine="mikro" pkg="mikrorobot" type="base_controller.py"/>
   
 </launch>

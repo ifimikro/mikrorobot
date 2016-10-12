@@ -45,7 +45,7 @@ translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-
 translation_matrix *= (R/4.0)
 
 # covariance matrix
-variance_vector = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+variance_vector = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 mat = [[x*y for x in variance_vector] for y in variance_vector]
 cov = np.ravel(mat)
 
@@ -72,7 +72,7 @@ def euler_to_quaternion(pitch, roll, yaw):
     x = t0*t3*t4 - t1*t2*t5
     y = t0*t2*t5 + t1*t3*t4
     z = t1*t2*t4 - t3*t5*t0
-    return [w, x, y, z]
+    return [x, y, z, w]
 
 ##############################################################
 ##   Message Callbacks
@@ -103,7 +103,7 @@ def motor_speeds_cb(JointState):
   y += (delta_y * np.cos(delta_th) + delta_x * np.sin(delta_th))
   th += delta_th
   # create quaternion for odom pose orientation
-  quat = euler_to_quaternion(0.0, 0.0, th)
+  quat = euler_to_quaternion(0, 0, th)
 
   Odom_obj1.header.stamp = rospy.Time.now()
   Odom_obj1.header.frame_id = "odom"
