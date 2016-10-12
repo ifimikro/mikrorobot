@@ -21,6 +21,7 @@ This file is part of RNA - The Ros Node Automator.
 ### This file is generated using ros node template, feel free to edit
 ### Please finish the TODO part
 #  Ros imports
+from __future__ import division
 import rospy
 import roslib; roslib.load_manifest('mikrorobot')
 
@@ -45,9 +46,7 @@ translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-
 translation_matrix *= (R/4.0)
 
 # covariance matrix
-variance_vector = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
-mat = [[x*y for x in variance_vector] for y in variance_vector]
-cov = np.ravel(mat)
+mean_vector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 # times for calculating position
 last_time = 0.0
@@ -74,6 +73,17 @@ def euler_to_quaternion(pitch, roll, yaw):
     z = t1*t2*t4 - t3*t5*t0
     return [w, x, y, z]
 
+def get_covariance(actual):
+    global mean_vector
+    tmp = np.add(mean_vector,actual)
+    tmp2 = np.true_divide(tmp, 2)
+    cov = []
+    for i in range(0, 5):
+        for j in range(0, 5):
+            print (tmp2[i]*tmp2[j])/2
+            cov.append(((actual[i]*actual[j])/2- (tmp2[i]*tmp2[j])/2)/5)
+    return cov
+    
 ##############################################################
 ##   Message Callbacks
 def motor_speeds_cb(JointState):
@@ -97,6 +107,8 @@ def motor_speeds_cb(JointState):
   delta_x = twist[0] * delta_time
   delta_y = twist[1] * delta_time
   delta_th = twist[2] * delta_time
+
+  covariance = get_covariance([delta_x, delta_y, 0.0, 0.0, 0.0, delta_th])
 
   # position over time
   x += (delta_x * np.cos(delta_th) - delta_y * np.sin(delta_th))
