@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Code partially ported from: https://github.com/sparkfun/MPU9150_Breakout
+# Code partially ported from: https://github.com/sparkfun/MPU-9150_Breakout
 
 import rospy
 import math
@@ -29,6 +29,8 @@ zeta = math.sqrt(3.0 / 4.0) * GyroMeasDrift # Compute zeta, the other free param
 # Global varible for the orientation quaternion
 orientation = Quaternion(1, 0, 0, 0)
 
+orientation_error = [0, 0, 0]
+
 class PublisherAndSubscriber:
 
     imu = Imu()
@@ -38,7 +40,7 @@ class PublisherAndSubscriber:
         print("Node initialized")
         self.pub = rospy.Publisher('imu', Imu, queue_size=10)
         self.sub = rospy.Subscriber('mpu', Float32MultiArray, self.fixMessage)
-        self.lastReceivedTime = 0.0
+        self.lastReceivedTime = rospy.Time.now().to_sec()
         print("Created subscriber and publisher")
 
     def fixMessage(self, mpuRaw):
@@ -71,16 +73,21 @@ class PublisherAndSubscriber:
         # Covariance for Gyroscope is according to datasheet sqrt(+-20 degrees) per second
         # From datasheet 6.1 Gyroscope Specifications - Zero-rate output
 
+
         # Calculate orientation quaternion
         self.MadgwickQuaternionUpdate(self.deltaTime, accelX, accelY, accelZ, gyroX, gyroY, gyroZ, cmpsX, cmpsY, cmpsZ)
+
+        orientation_error[0] += self.deltaTime * abs(gyroX) * 20 / 180.0 * PI
+        orientation_error[1] += self.deltaTime * abs(gyroY) * 20 / 180.0 * PI
+        orientation_error[2] += self.deltaTime * abs(gyroZ) * 20 / 180.0 * PI
 
         #geometry_msgs/Quaternion
         self.imu.orientation = orientation
         #Float64[9] // Row major about x, y, z axes
         self.imu.orientation_covariance = (
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0
+            orientation_error[0], 0, 0,
+            0, orientation_error[1], 0,
+            0, 0, orientation_error[2]
         )
 
         #geometry_msgs/Vector3
@@ -88,18 +95,18 @@ class PublisherAndSubscriber:
         self.imu.angular_velocity = Vector3(gyroX, gyroY, gyroZ)
         #Float64[9] // Row major about x, y, z axes
         self.imu.angular_velocity_covariance = (
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0
+            20 / 180.0 * PI, 0, 0,
+            0, 20 / 180.0 * PI, 0,
+            0, 0, 20 / 180.0 * PI
         )
 
         #geometry_msgs/Vector3
         self.imu.linear_acceleration = Vector3(accelX, accelY, accelZ)
         #Float64[9] // Row major x, y, z
         self.imu.linear_acceleration_covariance = (
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0
+            temperature * 0.75 / 1000.0, 0, 0,
+            0, temperature * 0.75 / 1000.0, 0,
+            0, 0, temperature * 0.75 * 1.5 / 1000.0
         )
 
         self.imu.header.stamp = rospy.Time.now()
