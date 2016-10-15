@@ -124,7 +124,7 @@ def motor_speeds_cb(JointState):
   Odom_obj1.twist.twist.linear.x = twist[0]
   Odom_obj1.twist.twist.linear.y = twist[1]
   Odom_obj1.twist.twist.angular.z = twist[2]
-  Odom_obj1.twist.covariance = cov
+  Odom_obj1.twist.covariance = covariance
   Odom_obj1.pose.pose.position.x = x
   Odom_obj1.pose.pose.position.y = y
   Odom_obj1.pose.pose.position.z = 0.0
@@ -132,7 +132,7 @@ def motor_speeds_cb(JointState):
   Odom_obj1.pose.pose.orientation.y = quat[1]
   Odom_obj1.pose.pose.orientation.z = quat[2]
   Odom_obj1.pose.pose.orientation.w = quat[3]
-  Odom_obj1.pose.covariance = cov
+  Odom_obj1.pose.covariance = covariance
   last_time = current_time
 
   broadcaster.sendTransform((x, y, 0),

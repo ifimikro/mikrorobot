@@ -10,10 +10,9 @@
 
     <node name="odom" ns="mikrorobot" pkg="mikrorobot" type="odom.py"/>
 
-    <!-- node for mapping fra lidardata -->
+  <!-- node for mapping fra lidardata -->
   <node name="slam_gmapping" ns="mikrorobot" pkg="gmapping" type="slam_gmapping">
         <param name="map_update_interval" value="0.1"/>
-        <param name="throttle_scans" value="5"/>
   </node>
 
 </launch>
