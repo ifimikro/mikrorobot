@@ -44,6 +44,17 @@ R = 0.1 # hjulradius
 translation_matrix = np.matrix([[1.0, 1.0, -L], [1.0, -1.0, L], [1.0, -1.0, -L], [1.0, 1.0, L]])
 translation_matrix *= 1.0/R
 
+def limit_speeds(x):
+    new = 0
+    if x > 0 and x > 0.3:
+        new = 0.3
+    if x < 0 and x < -0.3:
+        new = -0.3
+    else:
+        new = x
+    return new
+
+
 
 ##############################################################
 ##   Message Callbacks
@@ -53,9 +64,9 @@ def cmd_vel_cb(Twist):
   #rospy.loginfo("base_controller: cmd_vel Message contains: angular = %d", Twist.angular)
 
   #tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.get_time())
-  x = Twist.linear.x if abs(Twist.linear.x) < 0.3 else 0.3
-  y = Twist.linear.y if abs(Twist.linear.y) < 0.3 else 0.3
-  z = Twist.angular.z if abs(Twist.angular.z) < 0.7 else 0.7
+  x = limit_speeds(Twist.linear.x)
+  y = limit_speeds(Twist.linear.y)
+  z = limit_speeds(Twist.angular.z)
 
   target = np.matrix([[x], [y], [z]])
 
