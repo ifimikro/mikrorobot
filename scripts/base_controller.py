@@ -53,9 +53,9 @@ def cmd_vel_cb(Twist):
   #rospy.loginfo("base_controller: cmd_vel Message contains: angular = %d", Twist.angular)
 
   #tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.get_time())
-  x = Twist.linear.x if Twist.linear.x < 0.3 else 0.3
-  y = Twist.linear.y if Twist.linear.y < 0.3 else 0.3
-  z = Twist.angular.z if Twist.angular.z < 0.7 else 0.7
+  x = Twist.linear.x if abs(Twist.linear.x) < 0.3 else 0.3
+  y = Twist.linear.y if abs(Twist.linear.y) < 0.3 else 0.3
+  z = Twist.angular.z if abs(Twist.angular.z) < 0.7 else 0.7
 
   target = np.matrix([[x], [y], [z]])
 
