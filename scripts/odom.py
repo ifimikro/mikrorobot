@@ -31,7 +31,6 @@ import roslib; roslib.load_manifest('mikrorobot')
 
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
-#from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import numpy as np
@@ -44,14 +43,19 @@ L2 = 0.184 # lengde
 L = 1.0/(L1+L2)
 translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-L, L, -L, L]])
 translation_matrix *= (R/4.0)
+
+# error constants
 error_per_meter = 0.05
 error_per_radian = 0.001
+lin_vel_error = 0.01
+ang_vel_error = 0.01
+
+# sum errors
 sum_error_x = 0.0
 sum_error_y = 0.0
 sum_error_th = 0.0
 
 # covariance matrix for updating
-#mean_vector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 cov = np.matrix('0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0')
 
 # times for calculating position
@@ -79,23 +83,13 @@ def euler_to_quaternion(pitch, roll, yaw):
     z = t1*t2*t4 - t3*t5*t0
     return [x, y, z, w]
 
-def get_covariance(actual, error):
-    # forventet error
-    global cov
-    #tmp = np.add(mean_vector,actual)
-    #tmp2 = np.true_divide(tmp, 2)
-    for i in range(0, 5):
-        for j in range(0, 5):
-            cov[i,j] = ((actual[i]*actual[j])/2- (error[i]*error[j]))/5
-    #mean_vector = tmp2
-    return cov.A1
 
 ##############################################################
 ##   Message Callbacks
 def motor_speeds_cb(JointState):
   rospy.loginfo("odom: I got message on topic motor_speeds")
   current_time = rospy.get_time()
-  global th, x, y, last_time, sum_error_y, sum_error_x, sum_error_th
+  global th, x, y, last_time, sum_error_y, sum_error_x, sum_error_th, lin_vel_error, ang_vel_error
 
   w1 = JointState.velocity[1]
   w2 = JointState.velocity[0]
@@ -118,6 +112,9 @@ def motor_speeds_cb(JointState):
   error_x = delta_x * error_per_meter
   error_y = delta_y * error_per_meter
   error_th = delta_th * error_per_radian
+  vel_error_x = twist[0] * lin_vel_error
+  vel_error_y = twist[1] * lin_vel_error
+  vel_error_th = twist[2]  * ang_vel_error
   sum_error_x += error_x
   sum_error_y += error_y
   sum_error_th += error_th
@@ -137,7 +134,12 @@ def motor_speeds_cb(JointState):
   Odom_obj1.twist.twist.linear.x = twist[0]
   Odom_obj1.twist.twist.linear.y = twist[1]
   Odom_obj1.twist.twist.angular.z = twist[2]
-  Odom_obj1.twist.covariance = covariance
+  Odom_obj1.twist.covariance[0] = vel_error_x
+  Odom_obj1.twist.covariance[7] = vel_error_y
+  Odom_obj1.twist.covariance[14] = 1000000
+  Odom_obj1.twist.covariance[21] = 1000000
+  Odom_obj1.twist.covariance[28] = 1000000
+  Odom_obj1.twist.covariance[35] = vel_error_th
   Odom_obj1.pose.pose.position.x = x
   Odom_obj1.pose.pose.position.y = y
   Odom_obj1.pose.pose.position.z = 0.0
