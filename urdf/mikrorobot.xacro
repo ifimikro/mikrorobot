@@ -262,6 +262,23 @@
     <axis xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
+        <!-- IMU -->
+  <link name="imu_frame">
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_frame"/>
+    <origin xyz="${depth/2 - 0.10} ${-0.02} ${- height/2 + 0.4}" rpy="0 ${PI} 0" />
+    <axis xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
   <!-- Transmissions -->
   <transmission name="tran_f_r">
     <type>transmission_interface/SimpleTransmission</type>

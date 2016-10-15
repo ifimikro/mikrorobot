@@ -38,7 +38,7 @@ class PublisherAndSubscriber:
     def _init_(self):
         rospy.init_node('imu_converter')
         print("Node initialized")
-        self.pub = rospy.Publisher('imu', Imu, queue_size=10)
+        self.pub = rospy.Publisher('imu_data', Imu, queue_size=10)
         self.sub = rospy.Subscriber('mpu', Float32MultiArray, self.fixMessage)
         self.lastReceivedTime = rospy.Time.now().to_sec()
         print("Created subscriber and publisher")

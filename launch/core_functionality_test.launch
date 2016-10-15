@@ -3,16 +3,31 @@
   <!-- Load robot description -->
   <param name="robot_description"  command="cat $(find mikrorobot)/urdf/mikrorobot.urdf" />
 
-    <!-- state publisher is absolutely necessary -->
+  <!-- state publisher is absolutely necessary -->
   <node name="robot_state_publisher" ns="mikrorobot" pkg="robot_state_publisher" type="robot_state_publisher">
     <remap from="/joint_states" to="/mikrorobot/joint_states" />
   </node>
 
-    <node name="odom" ns="mikrorobot" pkg="mikrorobot" type="odom.py"/>
+  <!-- Odometry node --> 
+  <node name="odom" ns="mikrorobot" pkg="mikrorobot" type="odom.py"/>
 
   <!-- node for mapping fra lidardata -->
   <node name="slam_gmapping" ns="mikrorobot" pkg="gmapping" type="slam_gmapping">
-        <param name="map_update_interval" value="0.1"/>
+        <param name="map_update_interval" value="1"/>
+  </node>
+
+  <!-- This node combines different odometry sources to provide robust odometry -->
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" ns="mikrorobot">
+    <param name="output_frame" value="odom"/>
+    <param name="base_footprint_frame" value="base_link"/>
+    <param name="freq" value="30.0"/>
+    <param name="sensor_timeout" value="1.0"/>
+    <param name="odom_used" value="true"/>
+    <param name="imu_used" value="true"/>
+    <param name="vo_used" value="false"/>
+    <param name="debug" value="false"/>
+    <param name="self_diagnose" value="false"/>
+    <param name="publish_tf" value="false"/>
   </node>
 
 </launch>
