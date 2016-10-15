@@ -155,11 +155,11 @@ def motor_speeds_cb(JointState):
   Odom_obj1.pose.covariance[35] = sum_error_th
   last_time = current_time
 
-  broadcaster.sendTransform((x, y, 0),
-                            quat,
-                            rospy.Time.now(),
-                            "base_link",
-                            "odom")
+  #broadcaster.sendTransform((x, y, 0),
+   #                         quat,
+    #                        rospy.Time.now(),
+     #                       "base_link",
+      #                      "odom")
 
 
 ##############################################################

@@ -351,7 +351,7 @@
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_frame"/>
-    <origin rpy="0 3.14159265359 0" xyz="0.15 -0.02 0.265"/>
+    <origin rpy="0.785398163397 3.14159265359 0" xyz="0.15 -0.02 0.265"/>
     <axis rpy="0 0 0" xyz="0 0 0"/>
   </joint>
   <!-- Transmissions -->
