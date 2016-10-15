@@ -56,7 +56,6 @@ def cmd_vel_cb(Twist):
   x = Twist.linear.x if Twist.linear.x < 0.3 else 0.3
   y = Twist.linear.y if Twist.linear.y < 0.3 else 0.3
   z = Twist.angular.z if Twist.angular.z < 0.7 else 0.7
-  print x, y, z
 
   target = np.matrix([[x], [y], [z]])
 
