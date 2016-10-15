@@ -44,9 +44,14 @@ L2 = 0.184 # lengde
 L = 1.0/(L1+L2)
 translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-L, L, -L, L]])
 translation_matrix *= (R/4.0)
+error_per_meter = 0.05
+error_per_radian = 0.001
+sum_error_x = 0.0
+sum_error_y = 0.0
+sum_error_th = 0.0
 
-# covariance matrix
-mean_vector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# covariance matrix for updating
+#mean_vector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 cov = np.matrix('0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0')
 
 # times for calculating position
@@ -74,15 +79,15 @@ def euler_to_quaternion(pitch, roll, yaw):
     z = t1*t2*t4 - t3*t5*t0
     return [x, y, z, w]
 
-def get_covariance(actual):
-    global mean_vector, cov
-    print mean_vector
-    tmp = np.add(mean_vector,actual)
-    tmp2 = np.true_divide(tmp, 2)
+def get_covariance(actual, error):
+    # forventet error
+    global cov
+    #tmp = np.add(mean_vector,actual)
+    #tmp2 = np.true_divide(tmp, 2)
     for i in range(0, 5):
         for j in range(0, 5):
-            cov[i,j] = ((actual[i]*actual[j])/2- (tmp2[i]*tmp2[j]))/5
-    mean_vector = tmp2
+            cov[i,j] = ((actual[i]*actual[j])/2- (error[i]*error[j]))/5
+    #mean_vector = tmp2
     return cov.A1
 
 ##############################################################
@@ -90,7 +95,7 @@ def get_covariance(actual):
 def motor_speeds_cb(JointState):
   rospy.loginfo("odom: I got message on topic motor_speeds")
   current_time = rospy.get_time()
-  global th, x, y, last_time
+  global th, x, y, last_time, sum_error_y, sum_error_x, sum_error_th
 
   w1 = JointState.velocity[1]
   w2 = JointState.velocity[0]
@@ -109,7 +114,15 @@ def motor_speeds_cb(JointState):
   delta_y = twist[1] * delta_time
   delta_th = twist[2] * delta_time
 
-  covariance = get_covariance([delta_x, delta_y, 0.0, 0.0, 0.0, delta_th])
+  # errors
+  error_x = delta_x * error_per_meter
+  error_y = delta_y * error_per_meter
+  error_th = delta_th * error_per_radian
+  sum_error_x += error_x
+  sum_error_y += error_y
+  sum_error_th += error_th
+
+  #covariance = get_covariance([delta_x, delta_y, 0.0, 0.0, 0.0, delta_th], [delta_x+error_x, delta_y+error_y, 0.0, 0.0, 0.0, delta_th+error_th])
 
   # position over time
   x += (delta_x * np.cos(delta_th) - delta_y * np.sin(delta_th))
@@ -132,7 +145,12 @@ def motor_speeds_cb(JointState):
   Odom_obj1.pose.pose.orientation.y = quat[1]
   Odom_obj1.pose.pose.orientation.z = quat[2]
   Odom_obj1.pose.pose.orientation.w = quat[3]
-  Odom_obj1.pose.covariance = covariance
+  Odom_obj1.pose.covariance[0] = sum_error_x
+  Odom_obj1.pose.covariance[7] = sum_error_y
+  Odom_obj1.pose.covariance[14] = 1000000
+  Odom_obj1.pose.covariance[21] = 1000000
+  Odom_obj1.pose.covariance[28] = 1000000
+  Odom_obj1.pose.covariance[35] = sum_error_th
   last_time = current_time
 
   broadcaster.sendTransform((x, y, 0),
