@@ -47,6 +47,7 @@ translation_matrix *= (R/4.0)
 
 # covariance matrix
 mean_vector = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+cov = np.matrix('0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0')
 
 # times for calculating position
 last_time = 0.0
@@ -74,17 +75,16 @@ def euler_to_quaternion(pitch, roll, yaw):
     return [x, y, z, w]
 
 def get_covariance(actual):
-    global mean_vector
+    global mean_vector, cov
+    print mean_vector
     tmp = np.add(mean_vector,actual)
     tmp2 = np.true_divide(tmp, 2)
-    cov = []
     for i in range(0, 5):
         for j in range(0, 5):
-            print (tmp2[i]*tmp2[j])/2
-            cov.append(((actual[i]*actual[j])/2- (tmp2[i]*tmp2[j]))/5)
+            cov[i,j] = ((actual[i]*actual[j])/2- (tmp2[i]*tmp2[j]))/5
     mean_vector = tmp2
-    return cov
-    
+    return cov.A1
+
 ##############################################################
 ##   Message Callbacks
 def motor_speeds_cb(JointState):
