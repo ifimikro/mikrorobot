@@ -44,7 +44,7 @@ translation_matrix = np.matrix([[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, -1.0, 1.0], [-
 translation_matrix *= (R/4.0)
 
 # error constants
-error_per_meter = 0.05
+error_per_meter = 0.2
 error_per_radian = 0.1
 lin_vel_error = 0.01
 ang_vel_error = 0.01
