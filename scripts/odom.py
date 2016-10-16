@@ -25,13 +25,9 @@ from __future__ import division
 import rospy
 import roslib; roslib.load_manifest('mikrorobot')
 
-## message import format:
-##from MY_PACKAGE_NAME.msg import MY_MESSAGE_NAME
-#from   mikrorobot.msg import  Twist
 
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import numpy as np
 import math
@@ -46,8 +42,8 @@ translation_matrix *= (R/4.0)
 # error constants
 error_per_meter = 0.2
 error_per_radian = 0.1
-lin_vel_error = 0.01
-ang_vel_error = 0.01
+lin_vel_error = 0.1
+ang_vel_error = 0.1
 
 # sum errors
 sum_error_x = 0.0
