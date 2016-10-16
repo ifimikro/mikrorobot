@@ -35,7 +35,6 @@ from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import numpy as np
 import math
-import tf
 
 R = 0.1
 L1 = 0.198 # bredde
@@ -46,7 +45,7 @@ translation_matrix *= (R/4.0)
 
 # error constants
 error_per_meter = 0.05
-error_per_radian = 0.001
+error_per_radian = 0.1
 lin_vel_error = 0.01
 ang_vel_error = 0.01
 
@@ -61,13 +60,12 @@ cov = np.matrix('0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0,0.0,0.0;0.0,0.0,0.0,0.0
 # times for calculating position
 last_time = 0.0
 current_time = 0.0
+first_publish = 1
 
 # position
 x = 0.0
 y = 0.0
 th = 0.0
-
-broadcaster = tf.TransformBroadcaster()
 
 def euler_to_quaternion(pitch, roll, yaw):
     t0 = np.cos(yaw/2.0)
@@ -89,7 +87,7 @@ def euler_to_quaternion(pitch, roll, yaw):
 def motor_speeds_cb(JointState):
   rospy.loginfo("odom: I got message on topic motor_speeds")
   current_time = rospy.get_time()
-  global th, x, y, last_time, sum_error_y, sum_error_x, sum_error_th, lin_vel_error, ang_vel_error
+  global th, x, y, last_time, sum_error_y, sum_error_x, sum_error_th, lin_vel_error, first_publish
 
   w1 = JointState.velocity[1]
   w2 = JointState.velocity[0]
@@ -102,7 +100,13 @@ def motor_speeds_cb(JointState):
   #vel /= k
   twist = translation_matrix * vel
 
+  # set twist to very small values in the first callback to generate some data
+  if first_publish == 1:
+      twist = [0.0001, 0.0001, 0.0001]
+      first_publish = 0
+
   delta_time = current_time - last_time
+
   # meters
   delta_x = twist[0] * delta_time
   delta_y = twist[1] * delta_time
@@ -112,6 +116,8 @@ def motor_speeds_cb(JointState):
   error_x = delta_x * error_per_meter
   error_y = delta_y * error_per_meter
   error_th = delta_th * error_per_radian
+
+  # values to put in covariance matrix
   vel_error_x = twist[0] * lin_vel_error
   vel_error_y = twist[1] * lin_vel_error
   vel_error_th = twist[2]  * ang_vel_error
@@ -119,12 +125,11 @@ def motor_speeds_cb(JointState):
   sum_error_y += error_y
   sum_error_th += error_th
 
-  #covariance = get_covariance([delta_x, delta_y, 0.0, 0.0, 0.0, delta_th], [delta_x+error_x, delta_y+error_y, 0.0, 0.0, 0.0, delta_th+error_th])
-
   # position over time
   x += (delta_x * np.cos(delta_th) - delta_y * np.sin(delta_th))
   y += (delta_y * np.cos(delta_th) + delta_x * np.sin(delta_th))
   th += delta_th
+
   # create quaternion for odom pose orientation
   quat = euler_to_quaternion(0, 0, th)
 
@@ -154,12 +159,6 @@ def motor_speeds_cb(JointState):
   Odom_obj1.pose.covariance[28] = 1000000
   Odom_obj1.pose.covariance[35] = sum_error_th
   last_time = current_time
-
-  broadcaster.sendTransform((x, y, 0),
-                            quat,
-                            rospy.Time.now(),
-                            "base_link",
-                            "odom")
 
 
 ##############################################################

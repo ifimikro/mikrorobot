@@ -54,6 +54,18 @@ def limit_speeds(x):
         new = x
     return new
 
+def limit_rpm(wheels):
+    max_rpms = [max(wheels), min(wheels)]
+
+    limit_factor = 0.0
+    # limit the wheel rpms based on the highest one
+    if (max_rpms[0] < abs(max_rpms[1]) and max_rpms[1] < -119):
+        limit_factor = (max_rpms[1] + 119) / max_rpms[1]
+    elif (max_rpms[0] > 119):
+        limit_factor = (max_rpms[0] - 119) / max_rpms[0]
+
+    return np.multiply(wheels, limit_factor)
+
 
 
 ##############################################################
@@ -64,9 +76,9 @@ def cmd_vel_cb(Twist):
   #rospy.loginfo("base_controller: cmd_vel Message contains: angular = %d", Twist.angular)
 
   #tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.get_time())
-  x = limit_speeds(Twist.linear.x)
-  y = limit_speeds(Twist.linear.y)
-  z = limit_speeds(Twist.angular.z)
+  x = Twist.linear.x
+  y = Twist.linear.y
+  z = Twist.angular.z
 
   target = np.matrix([[x], [y], [z]])
 
@@ -74,6 +86,7 @@ def cmd_vel_cb(Twist):
 
   #convert to rpm
   wheel_vel *= (60.0/(2*math.pi))
+  wheel_vel = limit_rpm(wheel_vel)
   # message to publish
   # flipping message to correspond to the motor script
   message = [wheel_vel[1], wheel_vel[0], wheel_vel[3], wheel_vel[2]]
