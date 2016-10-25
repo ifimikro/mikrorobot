@@ -313,6 +313,33 @@
     <origin rpy="0 0 0" xyz="0.22 0 0.155"/>
     <axis rpy="0 0 0" xyz="0 0 0"/>
   </joint>
+  <!-- Structure Camera -->
+  <link name="camera_depth_optical_frame">
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.02"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="1e-5"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+  <joint name="structure_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_depth_optical_frame"/>
+    <origin rpy="-1.57079632679 0 -1.57079632679" xyz="0.28 0 0.135"/>
+    <axis rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
   <!-- Laser -->
   <link name="laser_frame">
     <collision>

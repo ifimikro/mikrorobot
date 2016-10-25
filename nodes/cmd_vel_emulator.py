@@ -10,14 +10,19 @@ def cmd_vel_emulator():
     rospy.init_node('cmd_vel_emulator')
 
     rate = rospy.Rate(10) # 10hz
-
+    time = rospy.get_time()
     while not rospy.is_shutdown():
+        x = 1.0
+        y = 0.0
+        z = 0.0
+        now = rospy.get_time()
+        if now - time >= 1.0:
+            x = 0.0
 
         position = Twist()
-        position.linear.x = 1.0
-        position.linear.y = 1.0
-        position.angular.z = -1.0
-        #position.velocity = [1, 2, 1, 2]
+        position.linear.x = x
+        position.linear.y = y
+        position.angular.z = z
         rospy.loginfo(position)
         pub.publish(position)
         rate.sleep()

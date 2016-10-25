@@ -16,7 +16,7 @@
   <!--Arduino-nodene-->
   <node name="rosserial_python" ns="mikrorobot" machine="mikrorobot" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0"/>
   <node name="rosserial_python2" ns="mikrorobot" machine="mikrorobot" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM1"/>
-  <node name="rosserial_python3" ns="mikrorobot" machine="mikrorobot" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM2"/>
+  <node name="rosserial_python3" ns="mikrorobot" machine="mikrorobot" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM2" respawn="true"/>
   <!--Noder som fyller inn meldingsdata med sensorinfo fra arduinoene -->
   <node name="imu_converter" pkg="mikrorobot" type="imu_converter.py" ns="mikrorobot">
     <remap from="/mikrorobot/mpu" to="/mpu"/>
@@ -29,5 +29,4 @@
   </node>
     <!-- node for å hente bilder fra webkameraet -->
   <node name="usb_cam" ns="mikrorobot" machine="mikro" pkg="usb_cam" type="usb_cam_node" />
-  
 </launch>
