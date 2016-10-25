@@ -2,9 +2,8 @@
   <master auto="start"/>
 
   <!--- Run AMCL -->
-<node pkg="amcl" type="amcl" name="amcl">
+<node pkg="amcl" type="amcl" name="amcl" ns="mikrorobot">
   <!-- Publish scans from best pose at a max of 10 Hz -->
-  <remap from="/scan" to="/mikrorobot/laser/scan"/>
   <param name="odom_model_type" value="omni"/>
   <param name="odom_alpha5" value="0.1"/>
   <param name="transform_tolerance" value="0.2" />
@@ -13,7 +12,7 @@
   <param name="min_particles" value="500"/>
   <param name="max_particles" value="5000"/>
   <param name="kld_err" value="0.05"/>
-  <param name="kld_z" value="0.99"/>
+  <param name="kld_z" value="0.99"/>x
   <param name="odom_alpha1" value="0.2"/>
   <param name="odom_alpha2" value="0.2"/>
   <!-- translation std dev, m -->
@@ -31,16 +30,14 @@
   <param name="laser_likelihood_max_dist" value="2.0"/>
   <param name="update_min_d" value="0.2"/>
   <param name="update_min_a" value="0.5"/>
-  <param name="odom_frame_id" value="odom"/>
+  <param name="odom_frame_id" value="odom_combined"/>
   <param name="resample_interval" value="1"/>
-  <param name="transform_tolerance" value="0.1"/>
+  <param name="transform_tolerance" value="0.2"/>
   <param name="recovery_alpha_slow" value="0.0"/>
   <param name="recovery_alpha_fast" value="0.0"/>
 </node>
 
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <remap from="cmd_vel" to="/mikrorobot/cmd_vel"/>
-    <remap from="/odom" to="/mikrorobot/odom"/>
+  <node pkg="move_base" type="move_base" ns="mikrorobot" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find mikrorobot)/navconfig/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find mikrorobot)/navconfig/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find mikrorobot)/navconfig/local_costmap_params.yaml" command="load" />

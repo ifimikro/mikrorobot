@@ -1,0 +1,12 @@
+<launch>
+
+  <!-- Load robot description -->
+  <param name="robot_description"  command="cat $(find mikrorobot)/urdf/mikrorobot.urdf" />
+
+  <!-- state publisher is absolutely necessary -->
+  <node name="robot_state_publisher" ns="mikrorobot" pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="/joint_states" to="/mikrorobot/joint_states" />
+  </node>
+
+
+</launch>
