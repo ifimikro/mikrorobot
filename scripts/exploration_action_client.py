@@ -18,6 +18,7 @@ def exploration_cb(OccupancyGrid):
     # get the current position and pose
     current_map = OccupancyGrid.data
     current_pos = listener.lookupTransform('base_link', 'map', rospy.Time(0))
+    print current_pos
 
     goal = MoveBaseGoal()
     goal.header.stamp = rospy.Time.now()
