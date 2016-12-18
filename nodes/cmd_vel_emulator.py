@@ -6,17 +6,17 @@ from sensor_msgs.msg import JointState
 
 def cmd_vel_emulator():
 
-    pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    pub = rospy.Publisher('/mikrorobot/cmd_vel', Twist, queue_size=10)
     rospy.init_node('cmd_vel_emulator')
 
     rate = rospy.Rate(10) # 10hz
     time = rospy.get_time()
     while not rospy.is_shutdown():
-        x = 1.0
+        x = 0.3
         y = 0.0
         z = 0.0
         now = rospy.get_time()
-        if now - time >= 1.0:
+        if now - time >= 3.33:
             x = 0.0
 
         position = Twist()

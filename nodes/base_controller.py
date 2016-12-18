@@ -90,6 +90,7 @@ def cmd_vel_cb(Twist):
   # message to publish
   # flipping message to correspond to the motor script
   message = [wheel_vel[1], wheel_vel[0], wheel_vel[3], wheel_vel[2]]
+  JointState_obj1.stamp = rospy.get_time()
   JointState_obj1.velocity = message
 
 ##############################################################
@@ -141,6 +142,7 @@ if __name__ == '__main__':
   while not rospy.is_shutdown():
 ##############################################################
 ##  Message Publications
+    JointState_obj1.header.stamp = rospy.get_rostime()
     JointState_pub1.publish(JointState_obj1)
 
 ##############################################################

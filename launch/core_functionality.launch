@@ -14,7 +14,7 @@
   <!-- node for mapping fra lidardata -->
   <node name="slam_gmapping" ns="mikrorobot" pkg="gmapping" type="slam_gmapping">
     <param name="odom_frame" value="odom_combined"/>
-    <param name="map_update_interval" value="1"/>
+    <!--<param name="map_update_interval" value="1"/>-->
   </node>
 
   <!-- This node combines different odometry sources to provide robust odometry -->

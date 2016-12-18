@@ -71,7 +71,7 @@ void loop()
     if (period[i] != 0) {
       frequency[i] = (float)1/(float)period[i]; //frekvensen i pulser/sekund
     }
-    rpm[i] = flippedDirections[i] * Direction[i] * frequency[i] * 60 / ppr; //Må muligens adde gearration
+    rpm[i] = flippedDirections[i] * Direction[i] * frequency[i] * 60 * gearRatio / ppr;
   }
 
   /**

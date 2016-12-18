@@ -7,8 +7,8 @@
 
   <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
   
-  <machine name="mikro" address="192.168.38.100" env-loader="/opt/ros/kinetic/env.sh" user="mikro" password="mikro" default="false"/>
-  <machine name="mikrorobot" address="192.168.38.103" env-loader="/opt/ros/kinetic/env.sh" user="mikrorobot" password="sonenPassord" default="false"/>
+  <machine name="mikro" address="192.168.38.101" env-loader="/opt/ros/kinetic/env.sh" user="mikro" password="mikro" default="false"/>
+  <machine name="mikrorobot" address="192.168.38.104" env-loader="/opt/ros/kinetic/env.sh" user="mikrorobot" password="sonenPassord" default="false"/>
   <!-- KONFIGURER ENV.SH PÅ RASPBERRY PIEN-->
   
   <!--Raspberry pi "mikrorobot" -->
