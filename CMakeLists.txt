@@ -109,7 +109,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy message_generation image_tr
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES beginner_tutorials
-   CATKIN_DEPENDS roscpp rospy message_runtime image_transport tf rosserial_python std_msgs geometry_msgs cv_bridge sensor_msgs 
+   CATKIN_DEPENDS roscpp rospy message_runtime image_transport tf rosserial_python std_msgs geometry_msgs cv_bridge sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -141,8 +141,8 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(mikrorobot_tf_broadcaster src/mikrorobot_tf_broadcaster.cpp)
-target_link_libraries(mikrorobot_tf_broadcaster ${catkin_LIBRARIES})
+#add_executable()
+#target_link_libraries(${catkin_LIBRARIES})
 
 
 
