@@ -4,7 +4,7 @@
 
 ### Installer ros kinetic
 
-http://wiki.ros.org/jade/Installation/Ubuntu
+http://wiki.ros.org/kinetic/Installation/Ubuntu
 **OBS: Hvis du bruker en annen terminal enn standard, for eksempel zsh:**
 Da vil ikke
 ```bash
@@ -17,15 +17,11 @@ source /opt/ros/kinetic/setup.zsh
 
 Installer pakker vi bruker:
 ```bash
-sudo apt-get install ros-kinetic-usb-cam
 sudo apt-get install ros-kinetic-rosserial
 sudo apt-get install ros-kinetic-navigation
-sudo apt-get install ros-kinetic-joy
 sudo apt-get install ros-kinetic-teleop-twist-joy
 sudo apt-get install ros-kinetic-robot-pose-ekf
 sudo apt-get install ros-kinetic-gmapping
-sudo apt-get install ros-kinetic-amcl
-sudo apt-get install ros-kinetic-gazebo-ros-pkgs
 sudo apt-get install ros-kinetic-ros-control
 sudo apt-get install ros-kinetic-ros-controllers
 ```
