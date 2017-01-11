@@ -1,7 +1,3 @@
-// Sweep
-// by BARRAGAN <http://barraganstudio.com> 
-// This example code is in the public domain.
-
 
 #include <Servo.h> 
 #include <ros.h>

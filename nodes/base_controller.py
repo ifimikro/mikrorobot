@@ -18,15 +18,15 @@ This file is part of RNA - The Ros Node Automator.
     along with RNA - The Ros Node Automator.  If not, see <http://www.gnu.org/licenses/>.
 --------------------------------
 """
-### This file is generated using ros node template, feel free to edit
-### Please finish the TODO part
+# This file is generated using ros node template, feel free to edit
+# Please finish the TODO part
 #  Ros imports
 import rospy
-import roslib; roslib.load_manifest('mikrorobot')
+import roslib
 
-## message import format:
-##from MY_PACKAGE_NAME.msg import MY_MESSAGE_NAME
-#from   mikrorobot.msg import  JointState
+# message import format:
+# from MY_PACKAGE_NAME.msg import MY_MESSAGE_NAME
+# from   mikrorobot.msg import  JointState
 
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
@@ -34,15 +34,20 @@ import tf
 import numpy as np
 import math
 
+roslib.load_manifest('mikrorobot')
+
+
 # 16/24 tenner
 # avstander fra robotens sentrum
 # bredde og lengde stemmer ikke helt
-L1 = 0.198 # bredde
-L2 = 0.184 # lengde
-L = L1+L2
-R = 0.1 # hjulradius
-translation_matrix = np.matrix([[1.0, 1.0, -L], [1.0, -1.0, L], [1.0, -1.0, -L], [1.0, 1.0, L]])
-translation_matrix *= 1.0/R
+L1 = 0.198  # bredde
+L2 = 0.184  # lengde
+L = L1 + L2
+R = 0.1  # hjulradius
+translation_matrix = np.matrix(
+    [[1.0, 1.0, -L], [1.0, -1.0, L], [1.0, -1.0, -L], [1.0, 1.0, L]])
+translation_matrix *= 1.0 / R
+
 
 def limit_speeds(x):
     new = 0
@@ -53,6 +58,7 @@ def limit_speeds(x):
     else:
         new = x
     return new
+
 
 def limit_rpm(wheels):
     max_rpms = [max(wheels), min(wheels)]
@@ -67,90 +73,89 @@ def limit_rpm(wheels):
     return np.multiply(wheels, limit_factor)
 
 
-
 ##############################################################
-##   Message Callbacks
+# Message Callbacks
 def cmd_vel_cb(Twist):
-  rospy.loginfo("base_controller: I got message on topic cmd_vel")
-  #rospy.loginfo("base_controller: cmd_vel Message contains: linear = %d", Twist.linear)
-  #rospy.loginfo("base_controller: cmd_vel Message contains: angular = %d", Twist.angular)
+    rospy.loginfo("base_controller: I got message on topic cmd_vel")
+    # rospy.loginfo("base_controller: cmd_vel Message contains: linear = %d", Twist.linear)
+    # rospy.loginfo("base_controller: cmd_vel Message contains: angular = %d", Twist.angular)
 
-  #tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.get_time())
-  x = Twist.linear.x
-  y = Twist.linear.y
-  z = Twist.angular.z
+    # tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.get_time())
+    x = Twist.linear.x
+    y = Twist.linear.y
+    z = Twist.angular.z
 
-  target = np.matrix([[x], [y], [z]])
+    target = np.matrix([[x], [y], [z]])
 
-  wheel_vel = translation_matrix * target # rad/s
+    wheel_vel = translation_matrix * target  # rad/s
 
-  #convert to rpm
-  wheel_vel *= (60.0/(2*math.pi))
-  wheel_vel = limit_rpm(wheel_vel)
-  # message to publish
-  # flipping message to correspond to the motor script
-  message = [wheel_vel[1], wheel_vel[0], wheel_vel[3], wheel_vel[2]]
-  JointState_obj1.stamp = rospy.get_time()
-  JointState_obj1.velocity = message
+    # convert to rpm
+    wheel_vel *= (60.0 / (2 * math.pi))
+    wheel_vel = limit_rpm(wheel_vel)
+    # message to publish
+    # flipping message to correspond to the motor script
+    message = [wheel_vel[1], wheel_vel[0], wheel_vel[3], wheel_vel[2]]
+    JointState_obj1.stamp = rospy.get_time()
+    JointState_obj1.velocity = message
 
 ##############################################################
-##  Service Callbacks
+# Service Callbacks
 
 
 ##############################################################
 # Main Program Code
 # This is run once when the node is brought up (roslaunch or rosrun)
 if __name__ == '__main__':
-  print "Hello world"
+    print "Hello world"
 # get the node started first so that logging works from the get-go
-  rospy.init_node("base_controller")
-  rospy.loginfo("Started template python node: base_controller.")
-  #tf_listener = tf.TransformListener()
-  #print tf_listener.lookupTransform("front_right_wheel_joint", "base_link", rospy.Time.now())
+    rospy.init_node("base_controller")
+    rospy.loginfo("Started template python node: base_controller.")
+    # tf_listener = tf.TransformListener()
+    # print tf_listener.lookupTransform("front_right_wheel_joint",
+    # "base_link", rospy.Time.now())
 ##############################################################
-##  Service Advertisers
-
-
-##############################################################
-##  Message Subscribers
-  Twist_sub1 = rospy.Subscriber("cmd_vel", Twist, cmd_vel_cb)
+# Service Advertisers
 
 
 ##############################################################
-##  Message Publishers
-  JointState_pub1  = rospy.Publisher("motor_cmds",JointState, queue_size=1000)
+# Message Subscribers
+    Twist_sub1 = rospy.Subscriber("cmd_vel", Twist, cmd_vel_cb)
 
 
 ##############################################################
-##  Service Client Inits
+# Message Publishers
+    JointState_pub1 = rospy.Publisher(
+        "motor_cmds", JointState, queue_size=1000)
 
+
+##############################################################
+# Service Client Inits
 
 
 ############# Message Object for Publisher ####################
-  JointState_obj1 = JointState()
+    JointState_obj1 = JointState()
 
-  #JointState_obj1.name = "Motor velocity commands"
-  JointState_obj1.position = []
-  JointState_obj1.velocity = []
-  JointState_obj1.effort = []
+    # JointState_obj1.name = "Motor velocity commands"
+    JointState_obj1.position = []
+    JointState_obj1.velocity = []
+    JointState_obj1.effort = []
 
 ############# Service Object for client ####################
 
 
 ##############################################################
-##  Main loop start
-  while not rospy.is_shutdown():
-##############################################################
-##  Message Publications
-    JointState_obj1.header.stamp = rospy.get_rostime()
-    JointState_pub1.publish(JointState_obj1)
+# Main loop start
+    while not rospy.is_shutdown():
+        ##############################################################
+        # Message Publications
+        JointState_obj1.header.stamp = rospy.get_rostime()
+        JointState_pub1.publish(JointState_obj1)
 
 ##############################################################
-##  Service Client Calls
+# Service Client Calls
 
-
-    rospy.loginfo("base_controller: main loop")
-    rospy.sleep(0.1)
+        rospy.loginfo("base_controller: main loop")
+        rospy.sleep(0.1)
 ###############################################################
 #
 # end of main wile loop

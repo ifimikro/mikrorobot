@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     patrol = StateMachine(['succeeded', 'aborted', 'preempted'])
     with patrol:
-        for i,w in enumerate(waypoints):
+        for i, w in enumerate(waypoints):
             goal_pose = MoveBaseGoal()
 
             goal_pose.target_pose.header.frame_id = 'map'
@@ -27,5 +27,11 @@ if __name__ == '__main__':
             goal_pose.target_pose.pose.orientation.z = w[2][2]
             goal_pose.target_pose.pose.orientation.w = w[2][3]
 
-            StateMachine.add(w[0], SimpleActionState('move_base', MoveBaseAction, goal=goal_pose), transitions = {'succeeded':waypoints[(i + 1) % len(waypoints)][0]})
+            StateMachine.add(w[0],
+                             SimpleActionState('move_base',
+                                               MoveBaseAction,
+                                               goal=goal_pose),
+                             transitions={
+                                 'succeeded':
+                                 waypoints[(i + 1) % len(waypoints)][0]})
     patrol.execute()

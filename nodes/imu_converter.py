@@ -11,9 +11,12 @@ from geometry_msgs.msg import Quaternion, Vector3
 
 PI = 3.14159265359
 
-# Global constants for 9 DoF fusion and AHRS (Attitude and Heading Reference System)
-GyroMeasError = PI * (40.0 / 180.0) # Gyroscope measurement error in rads/s (shown as 3 deg/s)
-GyroMeasDrift = PI * (0.0 / 180.0) # Gyroscope measurement drift in rad/s/s (shown as 0.0 deg/s/s)
+# Global constants for 9 DoF fusion and AHRS (Attitude and Heading
+# Reference System)
+# Gyroscope measurement error in rads/s (shown as 3 deg/s)
+GyroMeasError = PI * (40.0 / 180.0)
+# Gyroscope measurement drift in rad/s/s (shown as 0.0 deg/s/s)
+GyroMeasDrift = PI * (0.0 / 180.0)
 
 # There is a tradeoff in the beta parameter between accuracy and response speed.
 # In the original Madgwick study, beta of 0.041 (corresponding to GyroMeasError of 2.7 degrees/s) was found to give optimal accuracy.
@@ -22,14 +25,18 @@ GyroMeasDrift = PI * (0.0 / 180.0) # Gyroscope measurement drift in rad/s/s (sho
 # By increasing beta (GyroMeasError) by about a factor of fifteen, the response time constant is reduced to ~2 sec
 # I haven't noticed any reduction in solution accuracy. This is essentially the I coefficient in a PID control sense;
 # the bigger the feedback coefficient, the faster the solution converges, usually at the expense of accuracy.
-# In any case, this is the free parameter in the Madgwick filtering and fusion scheme.
-beta = math.sqrt(3.0 / 4.0) * GyroMeasError # Compute beta
-zeta = math.sqrt(3.0 / 4.0) * GyroMeasDrift # Compute zeta, the other free parameter in the Madgwick scheme usually set to a small or zero value
+# In any case, this is the free parameter in the Madgwick filtering and
+# fusion scheme.
+beta = math.sqrt(3.0 / 4.0) * GyroMeasError  # Compute beta
+# Compute zeta, the other free parameter in the Madgwick scheme usually
+# set to a small or zero value
+zeta = math.sqrt(3.0 / 4.0) * GyroMeasDrift
 
 # Global varible for the orientation quaternion
 orientation = Quaternion(1, 0, 0, 0)
 
 orientation_error = [0, 0, 0]
+
 
 class PublisherAndSubscriber:
 
@@ -65,7 +72,8 @@ class PublisherAndSubscriber:
         gyroZ = mpuRaw.data[8] / 180.0 * PI
 
         # Temperature in celsius. Used to calculate covariance for accelerometer
-        # Currently ignored because it does not really matter (maximum sqrt(1.50)mG per Celsius deg)
+        # Currently ignored because it does not really matter (maximum
+        # sqrt(1.50)mG per Celsius deg)
         temperature = mpuRaw.data[9]
 
         # TODO: Covariance for gyroscope
@@ -73,36 +81,36 @@ class PublisherAndSubscriber:
         # Covariance for Gyroscope is according to datasheet sqrt(+-20 degrees) per second
         # From datasheet 6.1 Gyroscope Specifications - Zero-rate output
 
-
         # Calculate orientation quaternion
-        self.MadgwickQuaternionUpdate(self.deltaTime, accelX, accelY, accelZ, gyroX, gyroY, gyroZ, cmpsX, cmpsY, cmpsZ)
+        self.MadgwickQuaternionUpdate(
+            self.deltaTime, accelX, accelY, accelZ, gyroX, gyroY, gyroZ, cmpsX, cmpsY, cmpsZ)
 
         orientation_error[0] += self.deltaTime * abs(gyroX) * 20 / 180.0 * PI
         orientation_error[1] += self.deltaTime * abs(gyroY) * 20 / 180.0 * PI
         orientation_error[2] += self.deltaTime * abs(gyroZ) * 20 / 180.0 * PI
 
-        #geometry_msgs/Quaternion
+        # geometry_msgs/Quaternion
         self.imu.orientation = orientation
-        #Float64[9] // Row major about x, y, z axes
+        # Float64[9] // Row major about x, y, z axes
         self.imu.orientation_covariance = (
             orientation_error[0], 0, 0,
             0, orientation_error[1], 0,
             0, 0, orientation_error[2]
         )
 
-        #geometry_msgs/Vector3
+        # geometry_msgs/Vector3
         # Converted to radians / sec
         self.imu.angular_velocity = Vector3(gyroX, gyroY, gyroZ)
-        #Float64[9] // Row major about x, y, z axes
+        # Float64[9] // Row major about x, y, z axes
         self.imu.angular_velocity_covariance = (
             20 / 180.0 * PI, 0, 0,
             0, 20 / 180.0 * PI, 0,
             0, 0, 20 / 180.0 * PI
         )
 
-        #geometry_msgs/Vector3
+        # geometry_msgs/Vector3
         self.imu.linear_acceleration = Vector3(accelX, accelY, accelZ)
-        #Float64[9] // Row major x, y, z
+        # Float64[9] // Row major x, y, z
         self.imu.linear_acceleration_covariance = (
             temperature * 0.75 / 1000.0, 0, 0,
             0, temperature * 0.75 / 1000.0, 0,
@@ -122,7 +130,7 @@ class PublisherAndSubscriber:
         hx = hy = _2bx = _2bz = 0
         s1 = s2 = s3 = s4 = 0
         qDot1 = qDot2 = qDot3 = qDot4 = 0
-        _2q1mx = _2q1my = _2q1mz = _2q1mw  = 0
+        _2q1mx = _2q1my = _2q1mz = _2q1mw = 0
         _4bx = _4bz = 0
 
         _2q1 = 2.0 * q1
@@ -165,19 +173,29 @@ class PublisherAndSubscriber:
         _2q1my = 2.0 * q1 * my
         _2q1mz = 2.0 * q1 * mz
         _2q2mx = 2.0 * q2 * mx
-        hx = mx * q1q1 - _2q1my * q4 + _2q1mz * q3 + mx * q2q2 + _2q2 * my * q3 + _2q2 * mz * q4 - mx * q3q3 - mx * q4q4
-        hy = _2q1mx * q4 + my * q1q1 - _2q1mz * q2 + _2q2mx * q3 - my * q2q2 + my * q3q3 + _2q3 * mz * q4 - my * q4q4
+        hx = mx * q1q1 - _2q1my * q4 + _2q1mz * q3 + mx * q2q2 + \
+            _2q2 * my * q3 + _2q2 * mz * q4 - mx * q3q3 - mx * q4q4
+        hy = _2q1mx * q4 + my * q1q1 - _2q1mz * q2 + _2q2mx * \
+            q3 - my * q2q2 + my * q3q3 + _2q3 * mz * q4 - my * q4q4
         _2bx = math.sqrt(hx * hx + hy * hy)
-        _2bz = -_2q1mx * q3 + _2q1my * q2 + mz * q1q1 + _2q2mx * q4 - mz * q2q2 + _2q3 * my * q4 - mz * q3q3 + mz * q4q4
+        _2bz = -_2q1mx * q3 + _2q1my * q2 + mz * q1q1 + _2q2mx * \
+            q4 - mz * q2q2 + _2q3 * my * q4 - mz * q3q3 + mz * q4q4
         _4bx = 2.0 * _2bx
         _4bz = 2.0 * _2bz
 
         # Gradient decent algorithm corrective step
-        s1 = -_2q3 * (2.0 * q2q4 - _2q1q3 - ax) + _2q2 * (2.0 * q1q2 + _2q3q4 - ay) - _2bz * q3 * (_2bx * (0.5 - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mx) + (-_2bx * q4 + _2bz * q2) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - my) + _2bx * q3 * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
-        s2 = _2q4 * (2.0 * q2q4 - _2q1q3 - ax) + _2q1 * (2.0 * q1q2 + _2q3q4 - ay) - 4.0 * q2 * (1.0 - 2.0 * q2q2 - 2.0 * q3q3 - az) + _2bz * q4 * (_2bx * (0.5 - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mx) + (_2bx * q3 + _2bz * q1) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - my) + (_2bx * q4 - _4bz * q2) * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
-        s3 = -_2q1 * (2.0 * q2q4 - _2q1q3 - ax) + _2q4 * (2.0 * q1q2 + _2q3q4 - ay) - 4.0 * q3 * (1.0 - 2.0 * q2q2 - 2.0 * q3q3 - az) + (-_4bx * q3 - _2bz * q1) * (_2bx * (0.5 - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mx) + (_2bx * q2 + _2bz * q4) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - my) + (_2bx * q1 - _4bz * q3) * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
-        s4 = _2q2 * (2.0 * q2q4 - _2q1q3 - ax) + _2q3 * (2.0 * q1q2 + _2q3q4 - ay) + (-_4bx * q4 + _2bz * q2) * (_2bx * (0.5 - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mx) + (-_2bx * q1 + _2bz * q3) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - my) + _2bx * q2 * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
-        norm = math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4)    # normalise step magnitude
+        s1 = -_2q3 * (2.0 * q2q4 - _2q1q3 - ax) + _2q2 * (2.0 * q1q2 + _2q3q4 - ay) - _2bz * q3 * (_2bx * (0.5 - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mx) + \
+            (-_2bx * q4 + _2bz * q2) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -
+                                        my) + _2bx * q3 * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
+        s2 = _2q4 * (2.0 * q2q4 - _2q1q3 - ax) + _2q1 * (2.0 * q1q2 + _2q3q4 - ay) - 4.0 * q2 * (1.0 - 2.0 * q2q2 - 2.0 * q3q3 - az) + _2bz * q4 * (_2bx * (0.5 - q3q3 - q4q4) + _2bz *
+                                                                                                                                                    (q2q4 - q1q3) - mx) + (_2bx * q3 + _2bz * q1) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - my) + (_2bx * q4 - _4bz * q2) * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
+        s3 = -_2q1 * (2.0 * q2q4 - _2q1q3 - ax) + _2q4 * (2.0 * q1q2 + _2q3q4 - ay) - 4.0 * q3 * (1.0 - 2.0 * q2q2 - 2.0 * q3q3 - az) + (-_4bx * q3 - _2bz * q1) * (_2bx * (0.5 - q3q3 - q4q4) + _2bz *
+                                                                                                                                                                    (q2q4 - q1q3) - mx) + (_2bx * q2 + _2bz * q4) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) - my) + (_2bx * q1 - _4bz * q3) * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
+        s4 = _2q2 * (2.0 * q2q4 - _2q1q3 - ax) + _2q3 * (2.0 * q1q2 + _2q3q4 - ay) + (-_4bx * q4 + _2bz * q2) * (_2bx * (0.5 - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mx) + \
+            (-_2bx * q1 + _2bz * q3) * (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -
+                                        my) + _2bx * q2 * (_2bx * (q1q3 + q2q4) + _2bz * (0.5 - q2q2 - q3q3) - mz)
+        norm = math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 *
+                         s4)    # normalise step magnitude
         norm = 1.0 / norm
         s1 *= norm
         s2 *= norm
@@ -195,7 +213,8 @@ class PublisherAndSubscriber:
         q2 += qDot2 * deltatime
         q3 += qDot3 * deltatime
         q4 += qDot4 * deltatime
-        norm = math.sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4) # Normalise quaternion
+        norm = math.sqrt(q1 * q1 + q2 * q2 + q3 * q3 +
+                         q4 * q4)  # Normalise quaternion
         norm = 1.0 / norm
 
         orientation.x = q1 * norm
