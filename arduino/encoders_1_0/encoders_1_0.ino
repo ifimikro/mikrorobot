@@ -9,9 +9,9 @@ const int pinBforEncoder[] = {11,9,3,13}; //Array of pins set up as B pin
 int flippedDirections[4] = { -1, 1, -1, 1 };
 
 
-byte pinAPrev[4]; //previous value of the pins 1-4
-int pulses[4]; //the number of the pulses from motor 1-4
-int Direction[4]; //the rotation direction of motor 1-4
+volatile byte pinAPrev[4]; //previous value of the pins 1-4
+volatile int pulses[4]; //the number of the pulses from motor 1-4
+volatile int Direction[4]; //the rotation direction of motor 1-4
 float rpm[4]; //rotations per minute of motor 1-4
 float speeds[4]; //speed for motor 1-4 in m/s
 long timeDelay;

@@ -24,6 +24,7 @@ sudo apt-get install ros-kinetic-robot-pose-ekf
 sudo apt-get install ros-kinetic-gmapping
 sudo apt-get install ros-kinetic-ros-control
 sudo apt-get install ros-kinetic-ros-controllers
+sudo apt-get install ros-kinetic-cv-bridge
 ```
 
 ### Sett opp et directory for ROS:
