@@ -8,9 +8,9 @@
   <!-- noder som skal kjøre på raspberry pi må launches etter denne kommandoen -->
   
   <machine name="jetson" address="10.42.0.235" env-loader="/opt/ros/kinetic/env.sh" user="ubuntu" password="ubuntu" default="false"/>
-  <!-- KONFIGURER ENV.SH PÅ RASPBERRY PIEN-->
+  <!-- KONFIGURER ENV.SH PÅ JETSON-->
   
-  <!--Raspberry pi "mikrorobot" -->
+  <!--Jetson -->
   <node name="base_controller" ns="mikrorobot" machine="jetson" pkg="mikrorobot" type="base_controller.py"/>
   <!--Arduino-nodene-->
   <node name="rosserial_python" ns="mikrorobot" machine="jetson" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0"/>
@@ -20,12 +20,11 @@
   <node name="imu_converter" pkg="mikrorobot" type="imu_converter.py" ns="mikrorobot">
     <remap from="/mikrorobot/mpu" to="/mpu"/>
   </node>
+  
   <node name="motor_speed_converter" ns="mikrorobot" machine="jetson" pkg="mikrorobot" type="motor_speed_converter.py" />
-
-  <!--Raspberry pi "mikro"-->
   <node name="lidar_node" ns="mikrorobot" machine="jetson" pkg="rplidar_ros" type="rplidarNode">
      <param name="throttle_scans" value="5"/>
   </node>
     <!-- node for å hente bilder fra webkameraet -->
-  <node name="usb_cam" ns="mikrorobot" machine="jetson" pkg="usb_cam" type="usb_cam_node" />
+  <node name="usb_cam" ns="mikrorobot" machine="jetson" pkg="usb_cam" type="usb_cam_node" args="_video_device:=/dev/video1"/>
 </launch>
