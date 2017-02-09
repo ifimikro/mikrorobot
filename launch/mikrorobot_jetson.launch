@@ -20,7 +20,7 @@
   <node name="imu_converter" pkg="mikrorobot" type="imu_converter.py" ns="mikrorobot">
     <remap from="/mikrorobot/mpu" to="/mpu"/>
   </node>
-  <node name="motor_speed_converter" ns="mikrorobot" machine="mikrorobot" pkg="mikrorobot" type="motor_speed_converter.py" />
+  <node name="motor_speed_converter" ns="mikrorobot" machine="jetson" pkg="mikrorobot" type="motor_speed_converter.py" />
 
   <!--Raspberry pi "mikro"-->
   <node name="lidar_node" ns="mikrorobot" machine="jetson" pkg="rplidar_ros" type="rplidarNode">
