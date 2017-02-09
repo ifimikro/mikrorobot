@@ -27,5 +27,5 @@
      <param name="throttle_scans" value="5"/>
   </node>
     <!-- node for å hente bilder fra webkameraet -->
-  <node name="usb_cam" ns="mikrorobot" machine="jetson" pkg="usb_cam" type="usb_cam_node.cpp" />
+  <node name="usb_cam" ns="mikrorobot" machine="jetson" pkg="usb_cam" type="usb_cam_node" />
 </launch>
